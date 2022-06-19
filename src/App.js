@@ -7,6 +7,7 @@ import {
   drawGrid,
   createGradiantBackground
 } from "./utils";
+import { MIN_SPEED_THRESHEHOLD, calcSpeed, snapToGrid } from "./draggingUtils";
 // Styles
 import "./tailwind.output.css";
 
@@ -23,8 +24,7 @@ const App = () => {
   const backgroundCanvasRef = useRef();
   const canDragShapes = useRef(false);
   const firstRender = useRef(true);
-  const mouseStartXPosition = useRef(0);
-  const mouseStartYPosition = useRef(0);
+  const mouseStartPosition = useRef({ y: 0, x: 0 });
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -59,8 +59,7 @@ const App = () => {
         }
       }
       // save the current mouse position
-      mouseStartXPosition.current = mx;
-      mouseStartYPosition.current = my;
+      mouseStartPosition.current = { x: mx, y: my };
     };
 
     const onMouseUp = (e) => {
@@ -77,7 +76,6 @@ const App = () => {
     const onMouseMove = (e) => {
       // if we're dragging anything...
       if (canDragShapes.current) {
-        console.log("mouse move");
         // tell the browser we're handling this mouse event
         e.preventDefault();
         e.stopPropagation();
@@ -88,8 +86,12 @@ const App = () => {
 
         // calculate the distance the mouse has moved
         // since the last mousemove
-        var dx = mx - mouseStartXPosition.current;
-        var dy = my - mouseStartYPosition.current;
+        const {
+          x: mouseStartXPosition,
+          y: mouseStartYPosition
+        } = mouseStartPosition.current;
+        let dx = mx - mouseStartXPosition;
+        let dy = my - mouseStartYPosition;
 
         // move each rect that isDragging
         // by the distance the mouse has moved
@@ -97,8 +99,18 @@ const App = () => {
         for (var i = 0; i < shapes.length; i++) {
           var r = shapes[i];
           if (r.isDragging) {
+            const prevPose = { x: r.x, y: r.y };
             r.x += dx;
             r.y += dy;
+
+            // calculate mouse speed
+            const { xSpeed, ySpeed } = calcSpeed(dx, dy);
+            // handle snapping xposition to the vertical grid
+            if (
+              xSpeed < MIN_SPEED_THRESHEHOLD ||
+              ySpeed < MIN_SPEED_THRESHEHOLD
+            )
+              snapToGrid(r, prevPose);
           }
         }
 
@@ -106,8 +118,7 @@ const App = () => {
         refreshCanvasScene(ctx, WIDTH, HEIGHT);
 
         // reset the starting mouse position for the next mousemove
-        mouseStartXPosition.current = mx;
-        mouseStartYPosition.current = my;
+        mouseStartPosition.current = { x: mx, y: my };
       }
     };
 
@@ -134,7 +145,7 @@ const App = () => {
     var ctx = backgroundCanvasRef.current.getContext("2d");
     ctx.moveTo(0, 0);
     createGradiantBackground(ctx, WIDTH, HEIGHT);
-    drawGrid(ctx, 10);
+    drawGrid(ctx);
   };
 
   return (
