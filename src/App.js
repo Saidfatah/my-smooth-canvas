@@ -13,27 +13,34 @@ import { MIN_SPEED_THRESHEHOLD, ANIMATIONS_TYPES } from "./constants";
 // Styles
 import "./tailwind.output.css";
 
-const shapes = [Shape(), Shape({ x: 300, y: 500, height: 75, width: 150 })];
+const shapes = [Shape({ x: 100, y: 100, height: 25, width: 25 })];
 
 const timelineAnimations = {
   FIRST_ANIMATION_ID: animation({
     type: ANIMATIONS_TYPES.moveX,
-    value: 100,
-    prevValue: 0,
+    value: 200,
+    prevValue: 100,
     duration: 1000,
     shapeId: shapes[0].id
   }),
   FIRST_ANIMATION_ID_2: animation({
-    type: ANIMATIONS_TYPES.moveX,
-    value: 50,
+    type: ANIMATIONS_TYPES.moveY,
+    value: 200,
     prevValue: 100,
     duration: 1000,
     shapeId: shapes[0].id
   }),
   FIRST_ANIMATION_ID_3: animation({
+    type: ANIMATIONS_TYPES.moveX,
+    value: 100,
+    prevValue: 200,
+    duration: 1000,
+    shapeId: shapes[0].id
+  }),
+  FIRST_ANIMATION_ID_4: animation({
     type: ANIMATIONS_TYPES.moveY,
-    value: 200,
-    prevValue: 0,
+    value: 100,
+    prevValue: 200,
     duration: 1000,
     shapeId: shapes[0].id
   })
@@ -42,7 +49,8 @@ const timelineAnimations = {
 const timeStamps = [
   { time: 3000, animationId: "FIRST_ANIMATION_ID" },
   { time: 5000, animationId: "FIRST_ANIMATION_ID_2" },
-  { time: 8000, animationId: "FIRST_ANIMATION_ID_3" }
+  { time: 6000, animationId: "FIRST_ANIMATION_ID_3" },
+  { time: 7000, animationId: "FIRST_ANIMATION_ID_4" }
 ];
 
 // we're going  to have an array of animations
@@ -79,6 +87,13 @@ const SCENE_LENGTH = 12 * 1000;
 
 function easeOutQuad(t, b, c, d) {
   return -c * (t /= d) * (t - 2) + b;
+}
+function lerp(p1, p2, t) {
+  return p1 + (p2 - p1) * t;
+}
+
+function easeInOut(t) {
+  return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 }
 const App = () => {
   const canvasRef = useRef();
@@ -206,11 +221,10 @@ const App = () => {
   };
 
   const executeAnimationFrame = (timestamp, ctx) => {
-    console.log(currentTimeStamp.current);
     const targetAnimation =
       timelineAnimations[currentTimeStamp.current.animationId];
     const targetShape = shapes.filter(
-      (shape) => shape.id == targetAnimation.shapeId
+      (shape) => shape.id === targetAnimation.shapeId
     )[0];
 
     if (targetShape) {
@@ -222,24 +236,18 @@ const App = () => {
         const elapsedTimeSinceAnimationStart =
           timestamp - currentTimeStamp.current.time;
 
-        /*    const calculatedValue = Math.abs(
-          prevValue -
-            (elapsedTimeSinceAnimationStart / targetAnimation.duration) * value
-        ); */
-        let valueChange = (elapsedTimeSinceAnimationStart / duration) * value;
-        if (prevValue > value) valueChange -= prevValue;
-        const calculatedValue = easeOutQuad(
-          timestamp,
+        let calculatedValue;
+
+        calculatedValue = lerp(
           prevValue,
-          valueChange,
-          duration
+          value,
+          easeInOut(elapsedTimeSinceAnimationStart / duration)
         );
 
         const hasntFinishedYet =
           prevValue > value
             ? calculatedValue >= value
             : calculatedValue <= value;
-        console.log({ hasntFinishedYet, prevValue, value });
         if (hasntFinishedYet) {
           if (type === ANIMATIONS_TYPES.moveX) targetShape.x = calculatedValue;
           if (type === ANIMATIONS_TYPES.moveY) targetShape.y = calculatedValue;
