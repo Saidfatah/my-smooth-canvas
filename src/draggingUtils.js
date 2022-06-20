@@ -14,7 +14,10 @@ export const snapToGrid = (shape, prevPose) => {
   )
     shape.y = Math.round(shape.y / gridUnit) * gridUnit;
 };
-
+//  newSnapPosotion()
+//  shouldSnapToPositiuon()
+//  getPOsitionAtTimeStamp()
+//  animateHistory()
 const shoudPoseBeSnapped = (pose) => {
   const pu = pose / gridUnit;
   return Math.round(pu) - pu <= SNAP_THRESHEHOLD;

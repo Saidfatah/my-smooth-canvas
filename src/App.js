@@ -7,21 +7,46 @@ import {
   createGradiantBackground
 } from "./utils";
 import { WIDTH, HEIGHT } from "./constants";
-import { Shape } from "./schemas";
+import { Shape, animation } from "./schemas";
 import { calcSpeed, snapToGrid } from "./draggingUtils";
-import { MIN_SPEED_THRESHEHOLD } from "./constants";
+import { MIN_SPEED_THRESHEHOLD, ANIMATIONS_TYPES } from "./constants";
 // Styles
 import "./tailwind.output.css";
 
 const shapes = [Shape(), Shape({ x: 300, y: 500, height: 75, width: 150 })];
 
+const timelineAnimations = {
+  FIRST_ANIMATION_ID: animation({
+    type: ANIMATIONS_TYPES.moveX,
+    value: 100,
+    prevValue: 0,
+    duration: 1000,
+    shapeId: shapes[0].id
+  }),
+  FIRST_ANIMATION_ID_2: animation({
+    type: ANIMATIONS_TYPES.moveX,
+    value: 50,
+    prevValue: 100,
+    duration: 1000,
+    shapeId: shapes[0].id
+  }),
+  FIRST_ANIMATION_ID_3: animation({
+    type: ANIMATIONS_TYPES.moveY,
+    value: 200,
+    prevValue: 0,
+    duration: 1000,
+    shapeId: shapes[0].id
+  })
+};
+// these should ordered from the first to the last one
+const timeStamps = [
+  { time: 3000, animationId: "FIRST_ANIMATION_ID" },
+  { time: 5000, animationId: "FIRST_ANIMATION_ID_2" },
+  { time: 8000, animationId: "FIRST_ANIMATION_ID_3" }
+];
+
 // we're going  to have an array of animations
-// animation-schema:{
-//    target:Shape,
-//    type:"move|slide|pop-in|pop-out|fade-in|fade-out|words",
-//    timeline: 10,
-//    duration: 10,
-//}
+
 //modes : composing | idle | playing
 
 // steps
@@ -41,10 +66,25 @@ const shapes = [Shape(), Shape({ x: 300, y: 500, height: 75, width: 150 })];
 //         - when user assign fade-in animation for an element at a time-stamp
 //           the element is automaticly hidden before that time-stamp
 
+var requestAnimationFrame =
+  window.requestAnimationFrame ||
+  window.mozRequestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.msRequestAnimationFrame;
+
+var cancelAnimationFrame =
+  window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+
+const SCENE_LENGTH = 12 * 1000;
+
+function easeOutQuad(t, b, c, d) {
+  return -c * (t /= d) * (t - 2) + b;
+}
 const App = () => {
   const canvasRef = useRef();
   const backgroundCanvasRef = useRef();
   const canDragShapes = useRef(false);
+  const currentTimeStamp = useRef(undefined);
   const firstRender = useRef(true);
   const mouseStartPosition = useRef({ y: 0, x: 0 });
 
@@ -61,6 +101,7 @@ const App = () => {
       firstRender.current = false;
     }
 
+    exectueTimeline(ctx);
     const onMouseDown = (e) => {
       // tell the browser we're handling this mouse event
       e.preventDefault();
@@ -149,12 +190,74 @@ const App = () => {
     canvasRef.current.onmouseup = onMouseUp;
   }, []);
 
-  function refreshCanvasScene(ctx, width, height) {
+  const exectueTimeline = (ctx) => {
+    var myReq;
+    currentTimeStamp.current = timeStamps.shift();
+    function step(timestamp) {
+      if (!currentTimeStamp.current) return cancelAnimationFrame(myReq);
+      if (currentTimeStamp && timestamp > currentTimeStamp.current.time)
+        executeAnimationFrame(timestamp, ctx);
+
+      if (timestamp / 1000 < SCENE_LENGTH / 1000)
+        myReq = requestAnimationFrame(step);
+      else cancelAnimationFrame(myReq);
+    }
+    myReq = requestAnimationFrame(step);
+  };
+
+  const executeAnimationFrame = (timestamp, ctx) => {
+    console.log(currentTimeStamp.current);
+    const targetAnimation =
+      timelineAnimations[currentTimeStamp.current.animationId];
+    const targetShape = shapes.filter(
+      (shape) => shape.id == targetAnimation.shapeId
+    )[0];
+
+    if (targetShape) {
+      const type = targetAnimation.type;
+      if (type === ANIMATIONS_TYPES.moveX || type === ANIMATIONS_TYPES.moveY) {
+        const value = targetAnimation.value;
+        const prevValue = targetAnimation.prevValue;
+        const duration = targetAnimation.duration;
+        const elapsedTimeSinceAnimationStart =
+          timestamp - currentTimeStamp.current.time;
+
+        /*    const calculatedValue = Math.abs(
+          prevValue -
+            (elapsedTimeSinceAnimationStart / targetAnimation.duration) * value
+        ); */
+        let valueChange = (elapsedTimeSinceAnimationStart / duration) * value;
+        if (prevValue > value) valueChange -= prevValue;
+        const calculatedValue = easeOutQuad(
+          timestamp,
+          prevValue,
+          valueChange,
+          duration
+        );
+
+        const hasntFinishedYet =
+          prevValue > value
+            ? calculatedValue >= value
+            : calculatedValue <= value;
+        console.log({ hasntFinishedYet, prevValue, value });
+        if (hasntFinishedYet) {
+          if (type === ANIMATIONS_TYPES.moveX) targetShape.x = calculatedValue;
+          if (type === ANIMATIONS_TYPES.moveY) targetShape.y = calculatedValue;
+        } else {
+          // reset currentTimeStamp to the next animation
+          currentTimeStamp.current = timeStamps.shift();
+        }
+      }
+
+      refreshCanvasScene(ctx);
+    }
+  };
+  function refreshCanvasScene(ctx) {
     if (!ctx) return;
     clearCanvasArea(ctx, WIDTH, HEIGHT);
 
     ctx.fillStyle = "transparent";
-    drawRectangle(ctx, 0, 0, width, height);
+    drawRectangle(ctx, 0, 0);
     // redraw each rect in the rects[] array
     for (var i = 0; i < shapes.length; i++) {
       var r = shapes[i];
