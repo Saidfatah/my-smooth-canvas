@@ -24,6 +24,23 @@ const shapes = [Shape(), Shape({ x: 300, y: 500, height: 75, width: 150 })];
 //}
 //modes : composing | idle | playing
 
+// steps
+// 1 - [Building timline bar] (should be built using html and react usestate a,d ref) use native elemnt and style it
+//     - https://www.w3schools.com/howto/howto_js_rangeslider.asp
+//     - bar with time stamps , use interval of 10 secons [......*...|..........|..........|..........]
+//     - time indecators are going to be below [MAYBE_LATER]
+//     - current time stamp indecator (acts as a slider)
+//       - listen to mouse
+//     - update current timestamp when moving time stamp indecator
+// 2 - [recording animations]
+//     - when moving a shape record an animation in history-array[animation-schema]
+//     - for animations such as [pop-in pop-out fad-in fade-out] I'm prbably going to
+//       implement them with UI buttons
+//         - when user assign pop-in animation for an element at a time-stamp
+//           the element is automaticly hidden before that time-stamp
+//         - when user assign fade-in animation for an element at a time-stamp
+//           the element is automaticly hidden before that time-stamp
+
 const App = () => {
   const canvasRef = useRef();
   const backgroundCanvasRef = useRef();
