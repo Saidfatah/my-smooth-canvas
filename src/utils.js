@@ -1,5 +1,5 @@
-import { v4 } from "uuid";
-// line here
+import { gridUnit } from "./constants";
+// dras rectangle
 /**
  * draws a rectangle
  * @param {object} ctx the targeted canva's context.
@@ -27,23 +27,6 @@ export const clearCanvasArea = (ctx, width, height) => {
   if (ctx.clearRect) ctx.clearRect(0, 0, width, height);
 };
 
-/**
- * just acts as a Schema for creating Shapes
- */
-export const Shape = (props) => {
-  const { x, y, height, width } = props || {};
-  return {
-    x: x || 0,
-    y: y || 0,
-    id: v4(),
-    width: width || 250,
-    height: height || 50,
-    fill: "#fff",
-    isDragging: false
-  };
-};
-
-export const gridUnit = 10;
 export const drawGrid = function (ctx) {
   var data = `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"> 
      <defs> 

@@ -1,24 +1,29 @@
 // Dependencies
 import React, { useEffect, useRef } from "react";
 import {
-  Shape,
   drawRectangle,
   clearCanvasArea,
   drawGrid,
   createGradiantBackground
 } from "./utils";
-import { MIN_SPEED_THRESHEHOLD, calcSpeed, snapToGrid } from "./draggingUtils";
+import { WIDTH, HEIGHT } from "./constants";
+import { Shape } from "./schemas";
+import { calcSpeed, snapToGrid } from "./draggingUtils";
+import { MIN_SPEED_THRESHEHOLD } from "./constants";
 // Styles
 import "./tailwind.output.css";
 
-let WIDTH;
-let HEIGHT = window.innerHeight;
-if (typeof window !== "undefined") {
-  WIDTH = window.innerWidth;
-  HEIGHT = window.innerHeight;
-}
+const shapes = [Shape(), Shape({ x: 300, y: 500, height: 75, width: 150 })];
 
-const shapes = [Shape()];
+// we're going  to have an array of animations
+// animation-schema:{
+//    target:Shape,
+//    type:"move|slide|pop-in|pop-out|fade-in|fade-out|words",
+//    timeline: 10,
+//    duration: 10,
+//}
+//modes : composing | idle | playing
+
 const App = () => {
   const canvasRef = useRef();
   const backgroundCanvasRef = useRef();

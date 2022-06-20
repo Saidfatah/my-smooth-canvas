@@ -1,4 +1,4 @@
-import { gridUnit } from "./utils";
+import { gridUnit, SNAP_THRESHEHOLD } from "./constants";
 
 export const snapToGrid = (shape, prevPose) => {
   const prevXpose = prevPose.x;
@@ -15,13 +15,11 @@ export const snapToGrid = (shape, prevPose) => {
     shape.y = Math.round(shape.y / gridUnit) * gridUnit;
 };
 
-const SNAP_THRESHEHOLD = 0.2;
 const shoudPoseBeSnapped = (pose) => {
   const pu = pose / gridUnit;
   return Math.round(pu) - pu <= SNAP_THRESHEHOLD;
 };
 
-export const MIN_SPEED_THRESHEHOLD = 10;
 const speedTracker = {
   elapsedtimeFromLastActiveMouseDrag: 0,
   lastYSpeed: 0,
