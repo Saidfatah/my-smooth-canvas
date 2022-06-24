@@ -1,11 +1,6 @@
 // Dependencies
 import React, { useEffect, useRef } from "react";
-import {
-  drawRectangle,
-  clearCanvasArea,
-  drawGrid,
-  createGradiantBackground
-} from "./utils";
+import { drawRectangle, clearCanvasArea } from "./utils";
 import { WIDTH, HEIGHT } from "./constants";
 import { Shape, animation } from "./schemas";
 import { calcSpeed, snapToGrid } from "./draggingUtils";

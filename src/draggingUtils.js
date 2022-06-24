@@ -4,22 +4,24 @@ export const snapToGrid = (shape, prevPose) => {
   const prevXpose = prevPose.x;
   const prevYpose = prevPose.y;
   if (
-    shoudPoseBeSnapped(shape.x) &&
+    shoudPoseBeSnapped(shape.x, gridUnit) &&
     Math.abs(prevXpose - shape.x) > SNAP_THRESHEHOLD
   )
-    shape.x = Math.round(shape.x / gridUnit) * gridUnit;
+    shape.x = newSnapedPosition(shape.x, gridUnit);
   if (
-    shoudPoseBeSnapped(shape.y) &&
+    shoudPoseBeSnapped(shape.y, gridUnit) &&
     Math.abs(prevYpose - shape.y) > SNAP_THRESHEHOLD
   )
-    shape.y = Math.round(shape.y / gridUnit) * gridUnit;
+    shape.y = newSnapedPosition(shape.y, gridUnit);
 };
 //  newSnapPosotion()
 //  shouldSnapToPositiuon()
 //  getPOsitionAtTimeStamp()
 //  animateHistory()
-const shoudPoseBeSnapped = (pose) => {
-  const pu = pose / gridUnit;
+export const newSnapedPosition = (currentPose, unit) =>
+  Math.round(currentPose / unit) * unit;
+export const shoudPoseBeSnapped = (pose, unit) => {
+  const pu = pose / unit;
   return Math.round(pu) - pu <= SNAP_THRESHEHOLD;
 };
 
