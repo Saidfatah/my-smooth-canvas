@@ -12,7 +12,7 @@ const MILL_SECOND_MARK_HEIGHT = 20;
 // - move current time-stamp-indecator
 // - - use layers to refresh canvas with new values
 
-const Timeline = () => {
+const Timeline = ({ timeIndicatorTimeStamp }) => {
   const timeLineCanvasRef = useRef();
   const timeLineScrollAbleParentRef = useRef();
   const timeSTampIndecatorLastPosition = useRef({ x: 50, y: 5 });
@@ -63,15 +63,16 @@ const Timeline = () => {
         let mx = parseInt(e.clientX - offsetX, 10) + scrollOffset;
         var my = parseInt(e.clientY - offsetY, 10);
 
-        if (shoudPoseBeSnapped(mx, ONE_SECOND_WIDTH / 10)) {
+        if (shoudPoseBeSnapped(mx, ONE_SECOND_WIDTH / 10))
           mx = newSnapedPosition(mx, ONE_SECOND_WIDTH / 10);
-          //mx = snapToGrid(r, prevPose);
-          clearCanvasArea(ctx, ONE_SECOND_WIDTH * 60, 50);
-          drawCurrentTimeStampIndecator(ctx, mx, 5);
-          drawTimelineMarks(ctx);
-          // reset the starting mouse position for the next mousemove
-          mouseStartPosition.current = { x: mx, y: my };
-        }
+        //mx = snapToGrid(r, prevPose);
+        clearCanvasArea(ctx, ONE_SECOND_WIDTH * 60, 50);
+        drawCurrentTimeStampIndecator(ctx, mx, 5);
+        drawTimelineMarks(ctx);
+        // reset the starting mouse position for the next mousemove
+        mouseStartPosition.current = { x: mx, y: my };
+        const selectedTimeStamp = getTimeIndicatorTimeStamp(mx);
+        timeIndicatorTimeStamp.current = selectedTimeStamp;
       }
       // clear all the dragging flags
       canDragTimeINdecator.current = false;
@@ -152,6 +153,8 @@ const Timeline = () => {
     ctx.fill();
   };
 
+  const getTimeIndicatorTimeStamp = (timeStampX) =>
+    timeStampX / ONE_SECOND_WIDTH;
   return (
     <div
       ref={timeLineScrollAbleParentRef}

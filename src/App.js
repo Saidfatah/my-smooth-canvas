@@ -1,5 +1,5 @@
 // Dependencies
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { drawRectangle, clearCanvasArea } from "./utils";
 import { WIDTH, HEIGHT } from "./constants";
 import { Shape, animation } from "./schemas";
@@ -71,7 +71,19 @@ function easeInOut(t) {
 
 // we're going  to have an array of animations
 
-//modes : composing | idle | playing
+//modes : COMPOSING | IDLE | PLAYING
+// by default we show the idle state
+// if there are any animations recorded we default to playing state
+
+// the state bar should be ontop
+// COMPOSING : save
+// -when save is clicked we transtion into IDLE mode
+// idle : play || edit
+// -when play is clicked we transition into PLAYING mode
+// -when edit is clicked we transition into COMPOSING mode
+// playing : pause || stop
+// -when pause is clicked we stay in PLAYING_MODE but we stop executing the timline
+// -when stop is clicked we transition into IDLE mode
 
 // steps
 // 1 - [Building timline bar] (should be built using html and react usestate a,d ref) use native elemnt and style it
@@ -82,10 +94,17 @@ function easeInOut(t) {
 //       - listen to mouse
 //     - update current timestamp when moving time stamp indecator
 
+const CANVAS_MODES = {
+  COMPOSING: "COMPOSING",
+  IDLE: "IDLE",
+  PLAYING: "PLAYING"
+};
 const App = () => {
+  const [canvasMode, setCanvasMode] = useState(CANVAS_MODES.COMPOSING);
   const canvasRef = useRef();
   const canDragShapes = useRef(false);
   const currentTimeStamp = useRef(undefined);
+  const timeIndicatorTimeStamp = useRef(undefined);
   const firstRender = useRef(true);
   const mouseStartPosition = useRef({ y: 0, x: 0 });
 
@@ -259,9 +278,13 @@ const App = () => {
     }
   }
 
+  const recordFrameState = () => {
+    // check for shapes that have changed their state
+    // position
+  };
   return (
     <div className="min-h-screen bg-gray-500 relative">
-      <Timeline />
+      <Timeline timeIndicatorTimeStamp={timeIndicatorTimeStamp} />
       <Background />
       <canvas
         ref={canvasRef}
