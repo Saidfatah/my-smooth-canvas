@@ -10,10 +10,12 @@ import { WIDTH, HEIGHT } from "./constants";
 import { Shape, animation } from "./schemas";
 import { calcSpeed, snapToGrid } from "./draggingUtils";
 import { MIN_SPEED_THRESHEHOLD, ANIMATIONS_TYPES } from "./constants";
+import Timeline from "./Timeline";
+import Background from "./Background";
 // Styles
 import "./tailwind.output.css";
 
-const shapes = [Shape({ x: 100, y: 100, height: 25, width: 25 })];
+const shapes = [Shape({ x: 100, y: 100, height: 30, width: 30 })];
 
 const timelineAnimations = {
   FIRST_ANIMATION_ID: animation({
@@ -48,10 +50,29 @@ const timelineAnimations = {
 // these should ordered from the first to the last one
 const timeStamps = [
   { time: 3000, animationId: "FIRST_ANIMATION_ID" },
-  { time: 5000, animationId: "FIRST_ANIMATION_ID_2" },
-  { time: 6000, animationId: "FIRST_ANIMATION_ID_3" },
-  { time: 7000, animationId: "FIRST_ANIMATION_ID_4" }
+  { time: 4000, animationId: "FIRST_ANIMATION_ID_2" },
+  { time: 5000, animationId: "FIRST_ANIMATION_ID_3" },
+  { time: 6000, animationId: "FIRST_ANIMATION_ID_4" }
 ];
+
+var requestAnimationFrame =
+  window.requestAnimationFrame ||
+  window.mozRequestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.msRequestAnimationFrame;
+
+var cancelAnimationFrame =
+  window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+
+const SCENE_LENGTH = 12 * 1000;
+
+function lerp(p1, p2, t) {
+  return p1 + (p2 - p1) * t;
+}
+
+function easeInOut(t) {
+  return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+}
 
 // we're going  to have an array of animations
 
@@ -65,39 +86,9 @@ const timeStamps = [
 //     - current time stamp indecator (acts as a slider)
 //       - listen to mouse
 //     - update current timestamp when moving time stamp indecator
-// 2 - [recording animations]
-//     - when moving a shape record an animation in history-array[animation-schema]
-//     - for animations such as [pop-in pop-out fad-in fade-out] I'm prbably going to
-//       implement them with UI buttons
-//         - when user assign pop-in animation for an element at a time-stamp
-//           the element is automaticly hidden before that time-stamp
-//         - when user assign fade-in animation for an element at a time-stamp
-//           the element is automaticly hidden before that time-stamp
 
-var requestAnimationFrame =
-  window.requestAnimationFrame ||
-  window.mozRequestAnimationFrame ||
-  window.webkitRequestAnimationFrame ||
-  window.msRequestAnimationFrame;
-
-var cancelAnimationFrame =
-  window.cancelAnimationFrame || window.mozCancelAnimationFrame;
-
-const SCENE_LENGTH = 12 * 1000;
-
-function easeOutQuad(t, b, c, d) {
-  return -c * (t /= d) * (t - 2) + b;
-}
-function lerp(p1, p2, t) {
-  return p1 + (p2 - p1) * t;
-}
-
-function easeInOut(t) {
-  return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-}
 const App = () => {
   const canvasRef = useRef();
-  const backgroundCanvasRef = useRef();
   const canDragShapes = useRef(false);
   const currentTimeStamp = useRef(undefined);
   const firstRender = useRef(true);
@@ -111,7 +102,6 @@ const App = () => {
     var offsetX = BB.left;
     var offsetY = BB.top;
     if (firstRender.current === true) {
-      drawBackgroundCanvas();
       refreshCanvasScene(ctx);
       firstRender.current = false;
     }
@@ -273,23 +263,11 @@ const App = () => {
       drawRectangle(ctx, r.x, r.y, r.width, r.height);
     }
   }
-  const drawBackgroundCanvas = () => {
-    if (!backgroundCanvasRef.current) return;
-    var ctx = backgroundCanvasRef.current.getContext("2d");
-    ctx.moveTo(0, 0);
-    createGradiantBackground(ctx, WIDTH, HEIGHT);
-    drawGrid(ctx);
-  };
 
   return (
     <div className="min-h-screen bg-gray-500 relative">
-      <canvas
-        ref={backgroundCanvasRef}
-        id="canvas"
-        width={WIDTH}
-        height={HEIGHT}
-        style={{ background: "#fff", magrin: 20, zIndex: -1 }}
-      ></canvas>
+      <Timeline />
+      <Background />
       <canvas
         ref={canvasRef}
         id="canvas"

@@ -9,6 +9,7 @@ export const gridUnit = 10;
 
 export const SNAP_THRESHEHOLD = 0.2;
 export const MIN_SPEED_THRESHEHOLD = 10;
+export const ONE_SECOND_WIDTH = 50;
 
 export const ANIMATIONS_TYPES = {
   moveX: "MOVE_X",
