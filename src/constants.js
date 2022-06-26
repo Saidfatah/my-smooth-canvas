@@ -25,3 +25,12 @@ export const CANVAS_MODES_ENUM = {
   IDLE: "IDLE",
   PLAYING: "PLAYING"
 };
+
+export const ICONS_NAMES = {
+  PLAY: "PLAY",
+  PAUSE: "PAUSE",
+  STOP: "STOP",
+  EDIT: "EDIT",
+  SUBMIT: "SUBMIT",
+  CANCEL: "CANCEL"
+};
