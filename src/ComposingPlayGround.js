@@ -1,5 +1,5 @@
 // Dependencies
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { drawRectangle, clearCanvasArea } from "./canvasUtils";
 import {
   WIDTH,
@@ -39,19 +39,8 @@ const ComposingPlayGround = ({
   const firstRender = useRef(true);
   const mouseStartPosition = useRef({ y: 0, x: 0 });
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    var ctx = canvasRef.current.getContext("2d");
-
-    var BB = canvasRef.current.getBoundingClientRect();
-    var offsetX = BB.left;
-    var offsetY = BB.top;
-    if (firstRender.current === true) {
-      refreshCanvasScene(ctx);
-      firstRender.current = false;
-    }
-
-    const onMouseDown = (e) => {
+  const onMouseDown = useCallback(
+    (offsetX, offsetY) => (e) => {
       console.log({ canvasMode });
       if (canvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
       // tell the browser we're handling this mouse event
@@ -74,9 +63,12 @@ const ComposingPlayGround = ({
       }
       // save the current mouse position
       mouseStartPosition.current = { x: mx, y: my };
-    };
+    },
+    [canvasMode]
+  );
 
-    const onMouseUp = (e) => {
+  const onMouseUp = useCallback(
+    (e) => {
       if (canvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
       // tell the browser we're handling this mouse event
       e.preventDefault();
@@ -87,8 +79,11 @@ const ComposingPlayGround = ({
       for (var i = 0; i < shapes.length; i++) {
         shapes[i].isDragging = false;
       }
-    };
-    const onMouseMove = (e) => {
+    },
+    [canvasMode]
+  );
+  const onMouseMove = useCallback(
+    (ctx, offsetX, offsetY) => (e) => {
       if (canvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
       // if we're dragging anything...
       if (canDragShapes.current) {
@@ -136,12 +131,31 @@ const ComposingPlayGround = ({
         // reset the starting mouse position for the next mousemove
         mouseStartPosition.current = { x: mx, y: my };
       }
-    };
+    },
+    [canvasMode]
+  );
 
-    canvasRef.current.onmousedown = onMouseDown;
-    canvasRef.current.onmousemove = onMouseMove;
-    canvasRef.current.onmouseup = onMouseUp;
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    var ctx = canvasRef.current.getContext("2d");
+    if (firstRender.current === true) {
+      refreshCanvasScene(ctx);
+      firstRender.current = false;
+    }
   }, []);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    var ctx = canvasRef.current.getContext("2d");
+
+    var BB = canvasRef.current.getBoundingClientRect();
+    var offsetX = BB.left;
+    var offsetY = BB.top;
+
+    canvasRef.current.onmousedown = onMouseDown(offsetX, offsetY);
+    canvasRef.current.onmousemove = onMouseMove(ctx, offsetX, offsetY);
+    canvasRef.current.onmouseup = onMouseUp;
+  }, [onMouseDown, onMouseMove, onMouseUp]);
 
   useEffect(() => {
     if (canvasMode === CANVAS_MODES_ENUM.PLAYING) {

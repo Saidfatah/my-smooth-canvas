@@ -38,6 +38,7 @@ const App = () => {
   const [canvasMode, setCanvasMode] = useState(CANVAS_MODES_ENUM.IDLE);
   const timeIndicatorTimeStamp = useRef(undefined);
 
+  // have play here
   return (
     <div className="min-h-screen bg-gray-500 relative">
       <CanvasModesBar {...{ setCanvasMode, canvasMode }} />
