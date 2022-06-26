@@ -1,78 +1,28 @@
 // Dependencies
 import React, { useEffect, useRef, useState } from "react";
-import { drawRectangle, clearCanvasArea } from "./utils";
-import { WIDTH, HEIGHT } from "./constants";
-import { Shape, animation } from "./schemas";
+import { drawRectangle, clearCanvasArea } from "./canvasUtils";
+import {
+  WIDTH,
+  HEIGHT,
+  requestAnimationFrame,
+  cancelAnimationFrame
+} from "./constants";
 import { calcSpeed, snapToGrid } from "./draggingUtils";
+import { lerp, easeInOut } from "./utils";
 import {
   MIN_SPEED_THRESHEHOLD,
   ANIMATIONS_TYPES,
-  CANVAS_MODES_ENUM
+  CANVAS_MODES_ENUM,
+  shapes,
+  timelineAnimations,
+  timeStamps,
+  SCENE_LENGTH
 } from "./constants";
 import Timeline from "./Timeline";
 import Background from "./Background";
 import CanvasModesBar from "./CanvasModesBar";
 // Styles
 import "./tailwind.output.css";
-
-const shapes = [Shape({ x: 100, y: 100, height: 30, width: 30 })];
-
-const timelineAnimations = {
-  FIRST_ANIMATION_ID: animation({
-    type: ANIMATIONS_TYPES.moveX,
-    value: 200,
-    prevValue: 100,
-    duration: 1000,
-    shapeId: shapes[0].id
-  }),
-  FIRST_ANIMATION_ID_2: animation({
-    type: ANIMATIONS_TYPES.moveY,
-    value: 200,
-    prevValue: 100,
-    duration: 1000,
-    shapeId: shapes[0].id
-  }),
-  FIRST_ANIMATION_ID_3: animation({
-    type: ANIMATIONS_TYPES.moveX,
-    value: 100,
-    prevValue: 200,
-    duration: 1000,
-    shapeId: shapes[0].id
-  }),
-  FIRST_ANIMATION_ID_4: animation({
-    type: ANIMATIONS_TYPES.moveY,
-    value: 100,
-    prevValue: 200,
-    duration: 1000,
-    shapeId: shapes[0].id
-  })
-};
-// these should ordered from the first to the last one
-const timeStamps = [
-  { time: 3000, animationId: "FIRST_ANIMATION_ID" },
-  { time: 4000, animationId: "FIRST_ANIMATION_ID_2" },
-  { time: 5000, animationId: "FIRST_ANIMATION_ID_3" },
-  { time: 6000, animationId: "FIRST_ANIMATION_ID_4" }
-];
-
-var requestAnimationFrame =
-  window.requestAnimationFrame ||
-  window.mozRequestAnimationFrame ||
-  window.webkitRequestAnimationFrame ||
-  window.msRequestAnimationFrame;
-
-var cancelAnimationFrame =
-  window.cancelAnimationFrame || window.mozCancelAnimationFrame;
-
-const SCENE_LENGTH = 12 * 1000;
-
-function lerp(p1, p2, t) {
-  return p1 + (p2 - p1) * t;
-}
-
-function easeInOut(t) {
-  return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-}
 
 // steps
 // 1 - [Building timline bar] (should be built using html and react usestate a,d ref) use native elemnt and style it
@@ -105,6 +55,8 @@ const App = () => {
     }
 
     const onMouseDown = (e) => {
+      console.log({ canvasMode });
+      if (canvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
       // tell the browser we're handling this mouse event
       e.preventDefault();
       e.stopPropagation();
@@ -128,6 +80,7 @@ const App = () => {
     };
 
     const onMouseUp = (e) => {
+      if (canvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
       // tell the browser we're handling this mouse event
       e.preventDefault();
       e.stopPropagation();
@@ -139,6 +92,7 @@ const App = () => {
       }
     };
     const onMouseMove = (e) => {
+      if (canvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
       // if we're dragging anything...
       if (canDragShapes.current) {
         // tell the browser we're handling this mouse event
@@ -199,6 +153,7 @@ const App = () => {
       exectueTimeline(ctx);
     }
   }, [canvasMode]);
+
   const exectueTimeline = (ctx) => {
     var myReq;
     currentTimeStamp.current = timeStamps.shift();
@@ -214,7 +169,6 @@ const App = () => {
     }
     myReq = requestAnimationFrame(step);
   };
-
   const executeAnimationFrame = (timestamp, ctx) => {
     const targetAnimation =
       timelineAnimations[currentTimeStamp.current.animationId];
@@ -268,11 +222,11 @@ const App = () => {
       drawRectangle(ctx, r.x, r.y, r.width, r.height);
     }
   }
-
   const recordFrameState = () => {
     // check for shapes that have changed their state
     // position
   };
+
   return (
     <div className="min-h-screen bg-gray-500 relative">
       <CanvasModesBar {...{ setCanvasMode, canvasMode }} />
