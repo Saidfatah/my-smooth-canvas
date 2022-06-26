@@ -4,9 +4,14 @@ import { drawRectangle, clearCanvasArea } from "./utils";
 import { WIDTH, HEIGHT } from "./constants";
 import { Shape, animation } from "./schemas";
 import { calcSpeed, snapToGrid } from "./draggingUtils";
-import { MIN_SPEED_THRESHEHOLD, ANIMATIONS_TYPES } from "./constants";
+import {
+  MIN_SPEED_THRESHEHOLD,
+  ANIMATIONS_TYPES,
+  CANVAS_MODES_ENUM
+} from "./constants";
 import Timeline from "./Timeline";
 import Background from "./Background";
+import CanvasModesBar from "./CanvasModesBar";
 // Styles
 import "./tailwind.output.css";
 
@@ -69,22 +74,6 @@ function easeInOut(t) {
   return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 }
 
-// we're going  to have an array of animations
-
-//modes : COMPOSING | IDLE | PLAYING
-// by default we show the idle state
-// if there are any animations recorded we default to playing state
-
-// the state bar should be ontop
-// COMPOSING : save
-// -when save is clicked we transtion into IDLE mode
-// idle : play || edit
-// -when play is clicked we transition into PLAYING mode
-// -when edit is clicked we transition into COMPOSING mode
-// playing : pause || stop
-// -when pause is clicked we stay in PLAYING_MODE but we stop executing the timline
-// -when stop is clicked we transition into IDLE mode
-
 // steps
 // 1 - [Building timline bar] (should be built using html and react usestate a,d ref) use native elemnt and style it
 //     - https://www.w3schools.com/howto/howto_js_rangeslider.asp
@@ -94,13 +83,8 @@ function easeInOut(t) {
 //       - listen to mouse
 //     - update current timestamp when moving time stamp indecator
 
-const CANVAS_MODES = {
-  COMPOSING: "COMPOSING",
-  IDLE: "IDLE",
-  PLAYING: "PLAYING"
-};
 const App = () => {
-  const [canvasMode, setCanvasMode] = useState(CANVAS_MODES.COMPOSING);
+  const [canvasMode, setCanvasMode] = useState(CANVAS_MODES_ENUM.IDLE);
   const canvasRef = useRef();
   const canDragShapes = useRef(false);
   const currentTimeStamp = useRef(undefined);
@@ -120,7 +104,6 @@ const App = () => {
       firstRender.current = false;
     }
 
-    exectueTimeline(ctx);
     const onMouseDown = (e) => {
       // tell the browser we're handling this mouse event
       e.preventDefault();
@@ -209,10 +192,18 @@ const App = () => {
     canvasRef.current.onmouseup = onMouseUp;
   }, []);
 
+  useEffect(() => {
+    if (canvasMode === CANVAS_MODES_ENUM.PLAYING) {
+      if (!canvasRef.current) return;
+      var ctx = canvasRef.current.getContext("2d");
+      exectueTimeline(ctx);
+    }
+  }, [canvasMode]);
   const exectueTimeline = (ctx) => {
     var myReq;
     currentTimeStamp.current = timeStamps.shift();
     function step(timestamp) {
+      console.log({ timestamp });
       if (!currentTimeStamp.current) return cancelAnimationFrame(myReq);
       if (currentTimeStamp && timestamp > currentTimeStamp.current.time)
         executeAnimationFrame(timestamp, ctx);
@@ -284,6 +275,7 @@ const App = () => {
   };
   return (
     <div className="min-h-screen bg-gray-500 relative">
+      <CanvasModesBar {...{ setCanvasMode, canvasMode }} />
       <Timeline timeIndicatorTimeStamp={timeIndicatorTimeStamp} />
       <Background />
       <canvas

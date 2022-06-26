@@ -19,3 +19,9 @@ export const ANIMATIONS_TYPES = {
   popIn: "POP_IN",
   popOut: "POP_OUT"
 };
+
+export const CANVAS_MODES_ENUM = {
+  COMPOSING: "COMPOSING",
+  IDLE: "IDLE",
+  PLAYING: "PLAYING"
+};
