@@ -20,8 +20,8 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     icon = (
       <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           d="M6 18L18 6M6 6l12 12"
         />
       </SvgContainer>
@@ -30,13 +30,13 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     icon = (
       <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </SvgContainer>
@@ -45,8 +45,8 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     icon = (
       <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </SvgContainer>
@@ -55,8 +55,8 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     icon = (
       <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"
         />
       </SvgContainer>
@@ -65,13 +65,13 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     icon = (
       <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
         />
       </SvgContainer>
@@ -80,8 +80,8 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     icon = (
       <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
         />
       </SvgContainer>

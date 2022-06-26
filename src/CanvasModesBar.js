@@ -20,12 +20,12 @@ import Icon from "./Icon";
 
 const CanvasModeButton = ({ title, iconName, onClick }) => (
   <button
-    className="mr-2 px-1 flex shadow-md rounded-md"
+    className="mr-2  flex shadow-md rounded-md"
     key={title}
     onClick={onClick}
   >
     {/* <span className="text-white font-thin">{title}</span> */}
-    <Icon size={12} name={iconName} />
+    <Icon strokeWidth={1} size={12} name={iconName} />
   </button>
 );
 
