@@ -1,6 +1,6 @@
 // Dependencies
 import React, { useEffect, useRef } from "react";
-import { drawGrid, createGradiantBackground } from "./utils";
+import { drawGrid, createGradiantBackground } from "./canvasUtils";
 import { WIDTH, HEIGHT } from "./constants";
 // Styles
 import "./tailwind.output.css";

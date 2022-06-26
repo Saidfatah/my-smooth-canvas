@@ -1,7 +1,7 @@
 // Dependencies
 import React, { useEffect, useRef } from "react";
 import { ONE_SECOND_WIDTH } from "./constants";
-import { clearCanvasArea } from "./utils";
+import { clearCanvasArea } from "./canvasUtils";
 import { shoudPoseBeSnapped, newSnapedPosition } from "./draggingUtils";
 
 const SECOND_MARK_HEIGHT = 15;
