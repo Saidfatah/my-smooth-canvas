@@ -1,23 +1,7 @@
 // Dependencies
-import React, { useEffect, useRef, useState } from "react";
-import { drawRectangle, clearCanvasArea } from "./canvasUtils";
-import {
-  WIDTH,
-  HEIGHT,
-  requestAnimationFrame,
-  cancelAnimationFrame
-} from "./constants";
-import { calcSpeed, snapToGrid } from "./draggingUtils";
-import { lerp, easeInOut } from "./utils";
-import {
-  MIN_SPEED_THRESHEHOLD,
-  ANIMATIONS_TYPES,
-  CANVAS_MODES_ENUM,
-  shapes,
-  timelineAnimations,
-  timeStamps,
-  SCENE_LENGTH
-} from "./constants";
+import React, { useRef, useState, useEffect } from "react";
+
+import { CANVAS_MODES_ENUM, SCENE_LENGTH, timeStamps } from "./constants";
 import Timeline from "./Timeline";
 import Background from "./Background";
 import ComposingPlayGround from "./ComposingPlayGround";
@@ -35,17 +19,82 @@ import "./tailwind.output.css";
 //     - update current timestamp when moving time stamp indecator
 
 const App = () => {
+  const [sceneLength, setSceneLength] = useState(SCENE_LENGTH);
   const [canvasMode, setCanvasMode] = useState(CANVAS_MODES_ENUM.IDLE);
   const timeIndicatorTimeStamp = useRef(undefined);
+  const timeLineCanvasRef = useRef();
+  const ComposingPlayGroudComponentref = useRef();
+  const timelineComponentref = useRef();
+  const composingPlayGroundRef = useRef();
+  const currentTimeStamp = useRef(undefined);
+
+  useEffect(() => {
+    if (canvasMode === CANVAS_MODES_ENUM.PLAYING) {
+      if (!composingPlayGroundRef.current) return;
+      //if (!timeLineCanvasRef.current) return;
+      var ctx1 = composingPlayGroundRef.current.getContext("2d");
+      //var ctx2 = timeLineCanvasRef.current.getContext("2d");
+      exectueTimeline(ctx1);
+    }
+  }, [canvasMode]);
+
+  const exectueTimeline = (ctx) => {
+    var myReq;
+    currentTimeStamp.current = timeStamps.shift();
+    function step(timestamp) {
+      if (!currentTimeStamp.current || !ComposingPlayGroudComponentref.current)
+        return cancelAnimationFrame(myReq);
+      if (currentTimeStamp && timestamp > currentTimeStamp.current.time) {
+        ComposingPlayGroudComponentref.current.executeAnimationFrame(
+          timestamp,
+          ctx
+        );
+        timelineComponentref.current.animateTimlineIndecator(timestamp, ctx);
+      }
+
+      if (timestamp / 1000 < sceneLength / 1000)
+        myReq = requestAnimationFrame(step);
+      else cancelAnimationFrame(myReq);
+    }
+    myReq = requestAnimationFrame(step);
+  };
 
   // have play here
+  const showTimeLine =
+    canvasMode === CANVAS_MODES_ENUM.COMPOSING ||
+    canvasMode === CANVAS_MODES_ENUM.PLAYING;
   return (
     <div className="min-h-screen bg-gray-500 relative">
       <CanvasModesBar {...{ setCanvasMode, canvasMode }} />
-      <Timeline timeIndicatorTimeStamp={timeIndicatorTimeStamp} />
+      {showTimeLine && (
+        <Timeline
+          ref={timelineComponentref}
+          {...{
+            sceneLength,
+            setSceneLength,
+            setCanvasMode,
+            setTimeLineCanvasRef: (ref) => {
+              console.log(ref);
+              timeLineCanvasRef.current = ref;
+            },
+            canvasMode,
+            timeIndicatorTimeStamp
+          }}
+        />
+      )}
       <Background />
       <ComposingPlayGround
-        {...{ setCanvasMode, canvasMode, timeIndicatorTimeStamp }}
+        ref={ComposingPlayGroudComponentref}
+        {...{
+          sceneLength,
+          setSceneLength,
+          setCanvasMode,
+          currentTimeStamp,
+          setComposingPlayGroundRef: (ref) => {
+            composingPlayGroundRef.current = ref;
+          },
+          timeIndicatorTimeStamp
+        }}
       />
     </div>
   );
