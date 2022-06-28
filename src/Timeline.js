@@ -132,8 +132,6 @@ const Timeline = forwardRef(
     useImperativeHandle(ref, () => ({
       animateTimlineIndecator(timestamp, ctx) {
         clearCanvasArea(ctx, ONE_SECOND_WIDTH * 60, 50);
-        console.log({ timestamp });
-        console.log(timestamp / 1000);
         drawCurrentTimeStampIndecator(
           ctx,
           (timestamp / 1000) * ONE_SECOND_WIDTH,
@@ -142,26 +140,7 @@ const Timeline = forwardRef(
         drawTimelineMarks(ctx);
       }
     }));
-    /* const animateTimlineIndecator = (ctx) => {
-      var myReq;
-      function step(timestamp) {
-        if (!timeLineCanvasRef.current) return cancelAnimationFrame(myReq);
-        clearCanvasArea(ctx, ONE_SECOND_WIDTH * 60, 50);
-        console.log({ timestamp });
-        console.log(timestamp / 1000);
-        drawCurrentTimeStampIndecator(
-          ctx,
-          (timestamp / 1000) * ONE_SECOND_WIDTH,
-          5
-        );
-        drawTimelineMarks(ctx);
 
-        if (timestamp / 1000 < ACTIVE_SCENE_LENGTH / 1000)
-          myReq = requestAnimationFrame(step);
-        else cancelAnimationFrame(myReq);
-      }
-      myReq = requestAnimationFrame(step);
-    }; */
     const drawTimelineMarks = (ctx) => {
       ctx.font = "12px Arial";
       ctx.fillStyle = "white";

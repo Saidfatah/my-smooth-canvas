@@ -68,6 +68,7 @@ const App = () => {
       <CanvasModesBar {...{ setCanvasMode, canvasMode }} />
       {showTimeLine && (
         <Timeline
+          key="timeline"
           ref={timelineComponentref}
           {...{
             sceneLength,
