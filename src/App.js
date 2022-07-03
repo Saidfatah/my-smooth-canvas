@@ -41,8 +41,8 @@ const App = () => {
   const exectueTimeline = (composingPlayGroundCtx, timeLineCanvasCtx) => {
     var myReq;
     currentTimeStamp.current = timeStamps.shift();
-    function step(timestamp) {
-      console.log(timestamp);
+    function step(_timestamp) {
+      const timestamp=_timestamp-1000
       timelineComponentref.current.animateTimlineIndecator(
         timestamp,
         timeLineCanvasCtx
@@ -50,7 +50,7 @@ const App = () => {
       if (!currentTimeStamp.current || !ComposingPlayGroudComponentref.current)
         return cancelAnimationFrame(myReq);
       if (currentTimeStamp && timestamp > currentTimeStamp.current.time) {
-        ComposingPlayGroudComponentref.current.executeAnimationFrame(timestamp);
+        ComposingPlayGroudComponentref.current.executeAnimationFrame(timestamp,composingPlayGroundCtx);
       }
 
       if (timestamp / 1000 < sceneLength / 1000)
@@ -76,7 +76,6 @@ const App = () => {
             setSceneLength,
             setCanvasMode,
             setTimeLineCanvasRef: (ref) => {
-              console.log(ref);
               timeLineCanvasRef.current = ref;
             },
             canvasMode,
