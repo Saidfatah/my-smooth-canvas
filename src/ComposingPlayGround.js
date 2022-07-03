@@ -179,13 +179,13 @@ const ComposingPlayGround = forwardRef(
     }, [onMouseDown, onMouseMove, onMouseUp]);
     useImperativeHandle(ref, () => ({
       executeAnimationFrame(timestamp, ctx) {
-        executeAnimationFrame(timestamp, ctx);
+        executeAnimationFrame(timestamp, ctx,currentTimeStamp);
       }
     }));
 
-    const executeAnimationFrame = (timestamp, ctx) => {
+    const executeAnimationFrame = (timestamp, ctx,currentTimeStamp) => {
       const targetAnimation =
-        timelineAnimations[currentTimeStamp.current.animationId];
+        timelineAnimations[currentTimeStamp.animationId];
       const targetShape = shapes.filter(
         (shape) => shape.id === targetAnimation.shapeId
       )[0];
@@ -200,7 +200,7 @@ const ComposingPlayGround = forwardRef(
           const prevValue = targetAnimation.prevValue;
           const duration = targetAnimation.duration;
           const elapsedTimeSinceAnimationStart =
-            timestamp - currentTimeStamp.current.time;
+            timestamp - currentTimeStamp.time;
 
           let calculatedValue;
 
