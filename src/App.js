@@ -33,23 +33,24 @@ const App = () => {
       if (!composingPlayGroundRef.current) return;
       //if (!timeLineCanvasRef.current) return;
       var ctx1 = composingPlayGroundRef.current.getContext("2d");
-      //var ctx2 = timeLineCanvasRef.current.getContext("2d");
-      exectueTimeline(ctx1);
+      var ctx2 = timeLineCanvasRef.current.getContext("2d");
+      exectueTimeline(ctx1, ctx2);
     }
   }, [canvasMode]);
 
-  const exectueTimeline = (ctx) => {
+  const exectueTimeline = (composingPlayGroundCtx, timeLineCanvasCtx) => {
     var myReq;
     currentTimeStamp.current = timeStamps.shift();
     function step(timestamp) {
+      console.log(timestamp);
+      timelineComponentref.current.animateTimlineIndecator(
+        timestamp,
+        timeLineCanvasCtx
+      );
       if (!currentTimeStamp.current || !ComposingPlayGroudComponentref.current)
         return cancelAnimationFrame(myReq);
       if (currentTimeStamp && timestamp > currentTimeStamp.current.time) {
-        ComposingPlayGroudComponentref.current.executeAnimationFrame(
-          timestamp,
-          ctx
-        );
-        timelineComponentref.current.animateTimlineIndecator(timestamp, ctx);
+        ComposingPlayGroudComponentref.current.executeAnimationFrame(timestamp);
       }
 
       if (timestamp / 1000 < sceneLength / 1000)
