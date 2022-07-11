@@ -31,7 +31,8 @@ export const animation = ({
   duration,
   shapeId,
   value,
-  prevValue
+  prevValue,
+  isLastAnimation = false 
 }) => {
   //const { type, timeStamp, duration, shapeId,value } = props || {};
 
@@ -42,6 +43,7 @@ export const animation = ({
     timeStamp,
     duration,
     value: value || 0, // for move animations
-    prevValue: prevValue || 0 // for move animations
+    prevValue: prevValue || 0 ,// for move animations
+    isLastAnimation,
   };
 };
