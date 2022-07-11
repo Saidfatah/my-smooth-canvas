@@ -1,5 +1,5 @@
 import React from "react";
-import { ICONS_NAMES } from "./constants";
+import { ICONS_NAMES } from "../utils/constants";
 
 const SvgContainer = ({ classes, size, strokeWidth, children: paths }) => (
   <svg

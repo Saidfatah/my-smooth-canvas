@@ -1,9 +1,8 @@
 // Dependencies
 import React, { useEffect, useRef } from "react";
-import { drawGrid, createGradiantBackground } from "./canvasUtils";
-import { WIDTH, HEIGHT } from "./constants";
-// Styles
-import "./tailwind.output.css";
+import { drawGrid, createGradiantBackground } from "../utils/canvasUtils";
+import { WIDTH, HEIGHT } from "../utils/constants";
+
 
 const Background = () => {
   const backgroundCanvasRef = useRef();

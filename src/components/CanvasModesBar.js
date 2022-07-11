@@ -1,22 +1,6 @@
 import React from "react";
-import { CANVAS_MODES_ENUM, ICONS_NAMES } from "./constants";
+import { CANVAS_MODES_ENUM, ICONS_NAMES } from "../utils/constants";
 import Icon from "./Icon";
-//modes : COMPOSING | IDLE | PLAYING
-// by default we show the idle state
-// if there are any animations recorded we default to playing state
-
-// the state bar should be ontop
-// COMPOSING : save
-// -when save is clicked we transtion into IDLE mode
-// idle : play || edit
-// -when play is clicked we transition into PLAYING mode
-// -when edit is clicked we transition into COMPOSING mode
-// playing : pause || stop
-// -when pause is clicked we stay in PLAYING_MODE but we stop executing the timline
-// -when stop is clicked we transition into IDLE mode
-
-//[TODO]
-// sub modes for PLAYING : PLAY || PAUSE
 
 const CanvasModeButton = ({ title, iconName, onClick }) => (
   <button
