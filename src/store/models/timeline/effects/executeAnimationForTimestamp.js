@@ -57,6 +57,20 @@ export default (dispatch, { timestampValue }, state) => {
           case ANIMATIONS_TYPES.fadeOut:
             shapes[indexOfTargetShape].opacity = calculatedValue;
             break;
+          case ANIMATIONS_TYPES.scaleX:
+            shapes[indexOfTargetShape].width = calculatedValue;
+            break;
+          case ANIMATIONS_TYPES.scaleY:
+            shapes[indexOfTargetShape].height = calculatedValue;
+            break;
+          // case ANIMATIONS_TYPES.popIn:
+          //   popIn animation is just two quick scaleY and scaleX  
+          //   shapes[indexOfTargetShape].height = calculatedValue;
+          //   break;
+          // case ANIMATIONS_TYPES.popOut:
+          //   popIn animation is just two quick scaleY and scaleX 
+          //   shapes[indexOfTargetShape].height = calculatedValue;
+          //   break;
 
           default:
             break;

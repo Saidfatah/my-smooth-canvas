@@ -28,8 +28,8 @@ export const drawRectangle = (ctx,shapeConfig) => {
 };
 
 export const drawShape = (ctx,shape) => {
-  const {type}=shape
-
+  const {type,fill}=shape
+  ctx.fillStyle = fill;
   switch (type) {
     case SHAPE_TYPES.BOX:
       drawRectangle(ctx,shape);

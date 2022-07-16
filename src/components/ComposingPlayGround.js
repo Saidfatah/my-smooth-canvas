@@ -149,11 +149,8 @@ const ComposingPlayGround = ({
 
       ctx.fillStyle = "transparent";
       // redraw each rect in the rects[] array
-      for (var i = 0; i < _shapes.length; i++) {
-        var r = shapes[i];
-        ctx.fillStyle = r.fill;
-        // here we need an other function that takes care of rendering 
-        drawShape(ctx,r);
+      for (var i = 0; i < _shapes.length; i++) {        
+        drawShape(ctx,shapes[i]);
       }
     }
  

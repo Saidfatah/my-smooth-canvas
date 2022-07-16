@@ -30,7 +30,9 @@ export const ANIMATIONS_TYPES = {
   fadeIn: "FADE_IN",
   fadeOut: "FADE_OUT",
   popIn: "POP_IN",
-  popOut: "POP_OUT"
+  popOut: "POP_OUT",
+  scaleX: "SCALE_X",
+  scaleY: "SCALE_Y",
 };
 
 export const CANVAS_MODES_ENUM = {
