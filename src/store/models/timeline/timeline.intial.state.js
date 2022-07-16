@@ -4,6 +4,8 @@ import { animation, Shape } from "../../../utils/schemas";
 export default {
     timeStamps: [
         { time: 3000, duration: 1000, animationId: "FIRST_ANIMATION_ID" },
+        { time: 3000, duration: 1000, animationId: "FIRST_ANIMATION_ID_9" },
+        { time: 3000, duration: 1000, animationId: "FIRST_ANIMATION_ID_10" },
         { time: 3000, duration: 1000, animationId: "FIRST_ANIMATION_ID_5" }, // shape 4
         { time: 3000, duration: 1000, animationId: "FIRST_ANIMATION_ID_7" }, // shape 4 fade in
         { time: 3500, duration: 1000, animationId: "FIRST_ANIMATION_ID_SHAPE_2" }, // shape 2
@@ -13,6 +15,8 @@ export default {
         { time: 5000, duration: 1000, animationId: "FIRST_ANIMATION_ID_3" },
         { time: 6000, duration: 1000, animationId: "FIRST_ANIMATION_ID_4" },
         { time: 6500, duration: 1000, animationId: "FIRST_ANIMATION_ID_SHAPE_3" },
+        { time: 6500, duration: 1000, animationId: "FIRST_ANIMATION_ID_11" },
+        { time: 6500, duration: 1000, animationId: "FIRST_ANIMATION_ID_12" },
       ],
       timelineAnimations: {
         FIRST_ANIMATION_ID: animation({
@@ -84,6 +88,34 @@ export default {
           prevValue:1,
           value:0,
           shapeId: "SHAPE4",
+        }),
+        FIRST_ANIMATION_ID_9: animation({
+          type: ANIMATIONS_TYPES.scaleX,
+          duration: 1000,
+          prevValue:30,
+          value:200,
+          shapeId: "SHAPE1",
+        }),
+        FIRST_ANIMATION_ID_10: animation({
+          type: ANIMATIONS_TYPES.scaleY,
+          duration: 1000,
+          prevValue:30,
+          value:200,
+          shapeId: "SHAPE1",
+        }),
+        FIRST_ANIMATION_ID_11: animation({
+          type: ANIMATIONS_TYPES.scaleY,
+          duration: 1000,
+          prevValue:200,
+          value:30,
+          shapeId: "SHAPE1",
+        }),
+        FIRST_ANIMATION_ID_12: animation({
+          type: ANIMATIONS_TYPES.scaleX,
+          duration: 1000,
+          prevValue:200,
+          value:30,
+          shapeId: "SHAPE1",
         }),
       },
       currentTimeStamp: 0,
