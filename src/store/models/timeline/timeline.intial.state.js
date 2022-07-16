@@ -9,6 +9,7 @@ export default {
         { time: 3500, duration: 1000, animationId: "FIRST_ANIMATION_ID_SHAPE_2" }, // shape 2
         { time: 4000, duration: 1000, animationId: "FIRST_ANIMATION_ID_2" },
         { time: 4500, duration: 1000, animationId: "FIRST_ANIMATION_ID_6" }, // shape 4
+        { time: 5000, duration: 1000, animationId: "FIRST_ANIMATION_ID_8" }, // shape 4
         { time: 5000, duration: 1000, animationId: "FIRST_ANIMATION_ID_3" },
         { time: 6000, duration: 1000, animationId: "FIRST_ANIMATION_ID_4" },
         { time: 6500, duration: 1000, animationId: "FIRST_ANIMATION_ID_SHAPE_3" },
@@ -73,6 +74,15 @@ export default {
         FIRST_ANIMATION_ID_7: animation({
           type: ANIMATIONS_TYPES.fadeIn,
           duration: 1000,
+          prevValue:0,
+          value:1,
+          shapeId: "SHAPE4",
+        }),
+        FIRST_ANIMATION_ID_8: animation({
+          type: ANIMATIONS_TYPES.fadeOut,
+          duration: 1000,
+          prevValue:1,
+          value:0,
           shapeId: "SHAPE4",
         }),
       },
