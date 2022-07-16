@@ -1,10 +1,11 @@
 import { v4 } from "uuid";
-import { ANIMATIONS_TYPES } from "./constants";
 /**
  * just acts as a Schema for creating Shapes
  */
+//[TODO] this should be a master class
+// then have subclass such as , text, image 
 export const Shape = (props) => {
-  const { x, y, height, width,id } = props || {};
+  const { x, y, height, width,id,type,content,opacity } = props || {};
   return {
     x: x || 0,
     y: y || 0,
@@ -12,7 +13,10 @@ export const Shape = (props) => {
     width: width || 250,
     height: height || 50,
     fill: "#fff",
-    isDragging: false
+    isDragging: false,
+    content:content || "",
+    type,
+    opacity:opacity || 1,
   };
 };
 

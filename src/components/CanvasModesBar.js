@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import { CANVAS_MODES_ENUM, ICONS_NAMES } from "../utils/constants";
 import Icon from "./Icon";
 
@@ -13,14 +14,14 @@ const CanvasModeButton = ({ title, iconName, onClick }) => (
   </button>
 );
 
-const CanvasModesBar = ({ canvasMode, setCanvasMode }) => {
+const CanvasModesBar = ({ canvasMode, swicthCanvasMode }) => {
   let barContent = (
     <div className="flex">
       <CanvasModeButton
         title="Play"
         iconName={ICONS_NAMES.PLAY}
         onClick={() => {
-          setCanvasMode(CANVAS_MODES_ENUM.PLAYING);
+          swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.PLAYING});
         }}
       />
 
@@ -28,7 +29,7 @@ const CanvasModesBar = ({ canvasMode, setCanvasMode }) => {
         title="Edit"
         iconName={ICONS_NAMES.EDIT}
         onClick={() => {
-          setCanvasMode(CANVAS_MODES_ENUM.COMPOSING);
+          swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.COMPOSING});
         }}
       />
     </div>
@@ -40,14 +41,14 @@ const CanvasModesBar = ({ canvasMode, setCanvasMode }) => {
           title="Pause"
           iconName={ICONS_NAMES.PAUSE}
           onClick={() => {
-            setCanvasMode(CANVAS_MODES_ENUM.PLAYING);
+            swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.PAUSE});
           }}
         />
         <CanvasModeButton
           title="Stop"
           iconName={ICONS_NAMES.STOP}
           onClick={() => {
-            setCanvasMode(CANVAS_MODES_ENUM.IDLE);
+            swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.IDLE});
           }}
         />
       </div>
@@ -59,14 +60,14 @@ const CanvasModesBar = ({ canvasMode, setCanvasMode }) => {
           title="Save"
           iconName={ICONS_NAMES.SUBMIT}
           onClick={() => {
-            setCanvasMode(CANVAS_MODES_ENUM.IDLE);
+            swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.IDLE});
           }}
         />
         <CanvasModeButton
           title="Cancel"
           iconName={ICONS_NAMES.CANCEL}
           onClick={() => {
-            setCanvasMode(CANVAS_MODES_ENUM.IDLE);
+            swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.IDLE});
           }}
         />
       </div>
@@ -74,4 +75,8 @@ const CanvasModesBar = ({ canvasMode, setCanvasMode }) => {
   return <div className=" p-2 w-full h-24 absolute inset-0">{barContent}</div>;
 };
 
-export default CanvasModesBar;
+export default connect(
+  state=>({currentCanvasMode:state.canvasMode.currentCanvasMode}),
+  dispatch=>({swicthCanvasMode:dispatch.canvasMode.swicthCanvasMode}),
+
+)(CanvasModesBar);

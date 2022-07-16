@@ -19,6 +19,11 @@ export const SNAP_THRESHEHOLD = 0.2;
 export const MIN_SPEED_THRESHEHOLD = 10;
 export const ONE_SECOND_WIDTH = 50;
 
+export const SHAPE_TYPES = {
+  BOX: "BOX",// has only a background or a border 
+  ELIPSE: "ELIPSE",// has only a background or a border 
+  TEXT:"TEXT"
+};
 export const ANIMATIONS_TYPES = {
   moveX: "MOVE_X",
   moveY: "MOVE_Y",
@@ -31,7 +36,8 @@ export const ANIMATIONS_TYPES = {
 export const CANVAS_MODES_ENUM = {
   COMPOSING: "COMPOSING",
   IDLE: "IDLE",
-  PLAYING: "PLAYING"
+  PLAYING: "PLAYING",
+  PAUSE: "PAUSE",
 };
 
 export const ICONS_NAMES = {

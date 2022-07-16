@@ -1,9 +1,9 @@
 // Dependencies
-import React, {
-  useEffect,
-  useRef,
-} from "react";
-import { ONE_SECOND_WIDTH, timeStamps } from "../utils/constants";
+import React, { useEffect, useRef } from "react";
+import {
+  CANVAS_MODES_ENUM,
+  ONE_SECOND_WIDTH,
+} from "../utils/constants";
 import { clearCanvasArea } from "../utils/canvasUtils";
 import { shoudPoseBeSnapped, newSnapedPosition } from "../utils/draggingUtils";
 import { connect } from "react-redux";
@@ -11,17 +11,8 @@ import { connect } from "react-redux";
 const SECOND_MARK_HEIGHT = 15;
 const MILL_SECOND_MARK_HEIGHT = 20;
 
-// draw timline sconds and millseconds
-// create current time-stamp-indecator
-// - move current time-stamp-indecator
-// - - use layers to refresh canvas with new values
-
-let ACTIVE_SCENE_LENGTH = 0;
-if (timeStamps.length && timeStamps[timeStamps.length - 1])
-  ACTIVE_SCENE_LENGTH = timeStamps[timeStamps.length - 1].time;
-const Timeline = ({
+const TimelineBar = ({
   timeIndicatorTimeStamp,
-  timeLineCanvasRef,
   executeAnimationForTimestamp,
   currentTimeStamp,
   setTimeLineCanvasRef,
@@ -110,13 +101,12 @@ const Timeline = ({
         drawCurrentTimeStampIndecator(ctx, mx, 5);
         drawTimelineMarks(ctx);
 
-        // escute animation at specific time stamp 
+        // escute animation at specific time stamp
         executeAnimationForTimestamp({
-          timestampValue:  getTimeIndicatorTimeStamp(mx) ,
-          requestAnimationID:undefined,
+          timestampValue: getTimeIndicatorTimeStamp(mx),
+          requestAnimationID: undefined,
           handleRefreshCallback: undefined,
         });
-        
 
         // reset the starting mouse position for the next mousemove
         mouseStartPosition.current = { x: mx, y: my };
@@ -124,8 +114,6 @@ const Timeline = ({
           ...timeSTampIndecatorLastPosition.current,
           x: mx,
         };
-
-
       }
     };
 
@@ -145,9 +133,7 @@ const Timeline = ({
       5
     );
     drawTimelineMarks(ctx);
-  }, [currentTimeStamp])
-  
-
+  }, [currentTimeStamp]);
 
   const drawTimelineMarks = (ctx) => {
     ctx.font = "12px Arial";
@@ -193,7 +179,7 @@ const Timeline = ({
   };
 
   const getTimeIndicatorTimeStamp = (timeStampX) =>
-    timeStampX / ONE_SECOND_WIDTH * 1000;
+    (timeStampX / ONE_SECOND_WIDTH) * 1000;
   return (
     <div
       ref={timeLineScrollAbleParentRef}
@@ -217,8 +203,36 @@ const Timeline = ({
   );
 };
 
+const TimelineBarConditionalRender = ({
+  currentCanvasMode,
+  timeIndicatorTimeStamp,
+  executeAnimationForTimestamp,
+  currentTimeStamp,
+  setTimeLineCanvasRef,
+}) => {
+  if (
+    currentCanvasMode === CANVAS_MODES_ENUM.COMPOSING ||
+    currentCanvasMode === CANVAS_MODES_ENUM.PLAYING
+  )
+    return (
+      <TimelineBar
+        {...{
+          timeIndicatorTimeStamp,
+          executeAnimationForTimestamp,
+          currentTimeStamp,
+          setTimeLineCanvasRef,
+        }}
+      />
+    );
+  return null;
+};
 export default connect(
-  state=>({currentTimeStamp:state.timeline.currentTimeStamp}),
+  (state) => ({
+    currentTimeStamp: state.timeline.currentTimeStamp,
+    currentCanvasMode: state.canvasMode.currentCanvasMode,
+  }),
   (dispatch) => ({
-    executeAnimationForTimestamp: dispatch.timeline.executeAnimationForTimestamp,
-  }))(Timeline);
+    executeAnimationForTimestamp:
+      dispatch.timeline.executeAnimationForTimestamp,
+  })
+)(TimelineBarConditionalRender);
