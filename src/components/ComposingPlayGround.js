@@ -1,6 +1,6 @@
 // Dependencies
 import React, { useCallback, useEffect, useRef } from "react";
-import { drawRectangle, clearCanvasArea } from "../utils/canvasUtils";
+import { clearCanvasArea, drawShape } from "../utils/canvasUtils";
 import { WIDTH, HEIGHT } from "../utils/constants";
 import { calcSpeed, snapToGrid } from "../utils/draggingUtils";
 
@@ -8,7 +8,7 @@ import { MIN_SPEED_THRESHEHOLD, CANVAS_MODES_ENUM } from "../utils/constants";
 import { connect } from "react-redux";
 
 const ComposingPlayGround = ({
-  canvasMode,
+  currentCanvasMode,
   setComposingPlayGroundRef,
   shapes,
 }) => {
@@ -21,8 +21,7 @@ const ComposingPlayGround = ({
 
   const onMouseDown = useCallback(
     (offsetX, offsetY) => (e) => {
-      console.log({ canvasMode });
-      if (canvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
+      if (currentCanvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
       // tell the browser we're handling this mouse event
       e.preventDefault();
       e.stopPropagation();
@@ -44,12 +43,12 @@ const ComposingPlayGround = ({
       // save the current mouse position
       mouseStartPosition.current = { x: mx, y: my };
     },
-    [canvasMode]
+    [currentCanvasMode]
   );
 
   const onMouseUp = useCallback(
     (e) => {
-      if (canvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
+      if (currentCanvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
       // tell the browser we're handling this mouse event
       e.preventDefault();
       e.stopPropagation();
@@ -60,11 +59,11 @@ const ComposingPlayGround = ({
         shapes[i].isDragging = false;
       }
     },
-    [canvasMode]
+    [currentCanvasMode]
   );
   const onMouseMove = useCallback(
     (ctx, offsetX, offsetY) => (e) => {
-      if (canvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
+      if (currentCanvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
       // if we're dragging anything...
       if (canDragShapes.current) {
         // tell the browser we're handling this mouse event
@@ -110,7 +109,7 @@ const ComposingPlayGround = ({
         mouseStartPosition.current = { x: mx, y: my };
       }
     },
-    [canvasMode]
+    [currentCanvasMode]
   );
 
   useEffect(() => {
@@ -153,7 +152,8 @@ const ComposingPlayGround = ({
       for (var i = 0; i < _shapes.length; i++) {
         var r = shapes[i];
         ctx.fillStyle = r.fill;
-        drawRectangle(ctx, r.x, r.y, r.width, r.height);
+        // here we need an other function that takes care of rendering 
+        drawShape(ctx,r);
       }
     }
  
@@ -177,6 +177,9 @@ const ComposingPlayGround = ({
   );
 };
 
-export default connect((state) => ({ shapes: state.timeline.shapes }))(
+export default connect((state) => ({ 
+  shapes: state.timeline.shapes,
+  currentCanvasMode: state.canvasMode.currentCanvasMode,
+ }))(
   ComposingPlayGround
 );

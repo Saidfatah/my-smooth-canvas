@@ -1,28 +1,49 @@
-import { gridUnit } from "./constants";
-// dras rectangle
-/**
- * draws a rectangle
- * @param {object} ctx the targeted canva's context.
- * @param {number} x the x position for the rect.
- * @param {number} y the y position for the rect.
- * @param {number} w the width of the rect.
- * @param {number} h the height of the rect.
- */
-export const drawRectangle = (ctx, x, y, w, h) => {
+import { gridUnit, SHAPE_TYPES } from "./constants";
+
+export const drawText = (ctx,shapeConfig) => {
+  const {x, y,opacity,content} = shapeConfig
   if (ctx.beginPath && ctx.rect && ctx.closePath && ctx.fill) {
     ctx.beginPath();
-    ctx.rect(x, y, w, h);
+    ctx.moveTo(x, y);
+    ctx.font = "16px Arial";
+    const opacityFloated = parseFloat(opacity.toFixed(4))
+    ctx.fillStyle = `rgba(255, 255, 255, ${opacityFloated})`;
+    ctx.strokeStyle = "white";
+
+    ctx.fillText(content, x, y);
+
+    ctx.fill();
+  }
+};
+
+
+export const drawRectangle = (ctx,shapeConfig) => {
+  const { x, y, width, height} = shapeConfig
+  if (ctx.beginPath && ctx.rect && ctx.closePath && ctx.fill) {
+    ctx.beginPath();
+    ctx.rect(x, y, width, height);
     ctx.closePath();
     ctx.fill();
   }
 };
 
-/**
- * clears the canvas
- * @param {object} ctx the targeted canva's context.
- * @param {number} width the targeted canva's width.
- * @param {number} height the targeted canva's height.
- */
+export const drawShape = (ctx,shape) => {
+  const {type}=shape
+
+  switch (type) {
+    case SHAPE_TYPES.BOX:
+      drawRectangle(ctx,shape);
+      break;
+  
+    case SHAPE_TYPES.TEXT:
+      drawText(ctx,shape);
+      break;
+  
+    default:
+      break;
+  }
+};
+
 export const clearCanvasArea = (ctx, width, height) => {
   if (ctx.clearRect) ctx.clearRect(0, 0, width, height);
 };
