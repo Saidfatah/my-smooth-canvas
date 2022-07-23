@@ -1,24 +1,25 @@
 import { ANIMATIONS_TYPES } from "../../../../utils/constants";
 import { easeInOut, lerp } from "../../../../utils/utils";
 
-export default (dispatch, { timestampValue }, state) => {
-  const shapes = state.timeline.shapes;
-  const timeStamps = [...state.timeline.timeStamps];
-  if (!timeStamps.length) return;
-  const targetTimeStamps = timeStamps.filter((timestamp) => {
+export default (dispatch, { timestamp }, state) => {
+  const shapes = [...state.timeline.shapes];
+  const keyframes = [...state.timeline.keyframes];
+  const animations = state.timeline.animations;
+  if (!keyframes.length) return;
+
+  const targetKeyframes = keyframes.filter((keyframe) => {
     return (
-      timestamp.time < timestampValue &&
-      timestampValue < timestamp.time + timestamp.duration
+      keyframe.time < timestamp && timestamp < keyframe.time + keyframe.duration
     );
   });
 
   dispatch.timeline.UPDATE_CURRENT_TIME_STAMP({
-    currentTimeStamp: timestampValue,
+    currentTimeStamp: timestamp,
   });
-  targetTimeStamps.forEach((timeStamp) => {
+  targetKeyframes.forEach((keyframe) => {
     // check if there is an animation linked to the time stamp
-    const targetAnimation =
-      state.timeline.timelineAnimations[timeStamp.animationId];
+
+    const targetAnimation = animations[keyframe.animationId];
     // execute animation on targeted shape
     if (targetAnimation) {
       const indexOfTargetShape = shapes.findIndex(
@@ -28,7 +29,7 @@ export default (dispatch, { timestampValue }, state) => {
       if (indexOfTargetShape > -1) {
         const type = targetAnimation.type;
         const duration = targetAnimation.duration;
-        const elapsedTimeSinceAnimationStart = timestampValue - timeStamp.time;
+        const elapsedTimeSinceAnimationStart = timestamp - keyframe.time;
         const value = targetAnimation.value;
         const prevValue = targetAnimation.prevValue;
 
@@ -64,11 +65,11 @@ export default (dispatch, { timestampValue }, state) => {
             shapes[indexOfTargetShape].height = calculatedValue;
             break;
           // case ANIMATIONS_TYPES.popIn:
-          //   popIn animation is just two quick scaleY and scaleX  
+          //   popIn animation is just two quick scaleY and scaleX
           //   shapes[indexOfTargetShape].height = calculatedValue;
           //   break;
           // case ANIMATIONS_TYPES.popOut:
-          //   popIn animation is just two quick scaleY and scaleX 
+          //   popIn animation is just two quick scaleY and scaleX
           //   shapes[indexOfTargetShape].height = calculatedValue;
           //   break;
 

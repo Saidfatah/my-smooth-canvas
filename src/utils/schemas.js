@@ -3,22 +3,27 @@ import { v4 } from "uuid";
  * just acts as a Schema for creating Shapes
  */
 //[TODO] this should be a master class
-// then have subclass such as , text, image 
+// then have subclass such as , text, image
 export const Shape = (props) => {
-  const { x, y, height, width,id,type,content,opacity } = props || {};
+  const { x, y, height, width, id, type, content, opacity } = props || {};
   return {
     x: x || 0,
     y: y || 0,
-    id: id||v4(),
+    id: id || v4(),
     width: width || 250,
     height: height || 50,
     fill: "#fff",
     isDragging: false,
-    content:content || "",
+    content: content || "",
     type,
-    opacity:opacity || 1,
+    opacity: opacity || 1,
   };
 };
+export const timeStamp = ({ time, duration, animationId }) => ({
+  time,
+  duration,
+  animationId,
+});
 
 // duration is calculated dynamicly
 // for example if shape is at position at time-stamp-A
@@ -36,18 +41,16 @@ export const animation = ({
   shapeId,
   value,
   prevValue,
-  isLastAnimation = false 
 }) => {
   //const { type, timeStamp, duration, shapeId,value } = props || {};
 
   return {
-    id: v4() || "ANIMATION_ID",
+    id: v4() || "ANIMATION_ID", //should be always prefixed with shapeId
     shapeId,
     type,
     timeStamp,
     duration,
     value: value || 0, // for move animations
-    prevValue: prevValue || 0 ,// for move animations
-    isLastAnimation,
+    prevValue: prevValue || 0, // for move animations
   };
 };
