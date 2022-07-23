@@ -5,15 +5,12 @@ export default (dispatch,_, state) => {
       state.timeline;
     const { currentCanvasMode } = state.canvasMode;
 
-    console.log({ currentTimeStamp });
     let firstTimeCalled = false;
     if (typeof previousRequestAnimationID !== "undefined"){
-      console.log("cancelAnimationFrame for last animationFrame")
       cancelAnimationFrame(previousRequestAnimationID);
     }
   
   const timeElapsedSinceLastActiveFrame =performance.now() - previousRequestAnimationFrameEndDate
-  console.log({timeElapsedSinceLastActiveFrame,requestAnimationFrameLastTimeStamp})
     function step(_timestamp) {
       let timestamp = _timestamp - 1000 - requestAnimationFrameLastTimeStamp + timeElapsedSinceLastActiveFrame ;
 
@@ -22,7 +19,7 @@ export default (dispatch,_, state) => {
         firstTimeCalled = true;
       }
       dispatch.timeline.executeAnimationForTimestamp({
-        timestampValue: timestamp,
+        timestamp: timestamp,
       });
 
       dispatch.timeline.UPDATE_REQUEST_ANIMATION_FRAME_LAST_TIMESTAMP( timestamp);

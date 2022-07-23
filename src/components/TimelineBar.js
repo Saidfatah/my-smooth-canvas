@@ -103,9 +103,7 @@ const TimelineBar = ({
 
         // escute animation at specific time stamp
         executeAnimationForTimestamp({
-          timestampValue: getTimeIndicatorTimeStamp(mx),
-          requestAnimationID: undefined,
-          handleRefreshCallback: undefined,
+          timestamp: getTimeIndicatorTimeStamp(mx)
         });
 
         // reset the starting mouse position for the next mousemove

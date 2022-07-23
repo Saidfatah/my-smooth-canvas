@@ -1,21 +1,8 @@
 import initialState from './timeline.intial.state'
 import executeAnimationForTimestamp from './effects/executeAnimationForTimestamp'
 import executeTimeline from './effects/executeTimeline'
-// steps
-// 1 - [Building timline bar] (should be built using html and react usestate a,d ref) use native elemnt and style it
-//     - https://www.w3schools.com/howto/howto_js_rangeslider.asp
-//     - bar with time stamps , use interval of 10 secons [......*...|..........|..........|..........]
-//     - time indecators are going to be below [MAYBE_LATER]
-//     - current time stamp indecator (acts as a slider)
-//       - listen to mouse
-//     - update current timestamp when moving time stamp indecator
-
-// BETTER_DO
-// calculate certaain shapes state at every specific timestamp
-// pass that state to function that consums it and rerenders the canvas with the right corresponding rendered state
-// use index to indiate current animation
-
-// when adding a new time stamp update timelineLength to the last timestamps time
+import addNewTimeStamp from './effects/addNewTimeStamp'
+import updateShapesInComposing from './effects/updateShapesInComposing'
 
 export default {
   state:initialState, 
@@ -28,6 +15,14 @@ export default {
     UPDATE_CURRENT_TIME_STAMP: (state, { currentTimeStamp }) => ({
       ...state,
       currentTimeStamp,
+    }),
+    UPDATE_TIME_STAMPS: (state, { keyframes }) => ({
+      ...state,
+      keyframes:[...keyframes],
+    }),
+    UPDATE_TIMELINE_ANIMATIONS: (state, { animations }) => ({
+      ...state,
+      animations,
     }),
     UPDATE_PREVIOUS_REQUEST_ANIMATION_ID: (state,  previousRequestAnimationID ) => ({
       ...state,
@@ -47,5 +42,7 @@ export default {
     // use async/await for async actions
     executeAnimationForTimestamp:(args,state)=> executeAnimationForTimestamp(dispatch,args,state),
     exectueTimeline: (args,state)=> executeTimeline(dispatch,args,state),
+    addNewTimeStamp: (args,state)=> addNewTimeStamp(dispatch,args,state),
+    updateShapesInComposing: (args,state)=> updateShapesInComposing(dispatch,args,state),
   }),
 };
