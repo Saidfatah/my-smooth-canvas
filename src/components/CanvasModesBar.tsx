@@ -1,9 +1,16 @@
 import React from "react";
 import { connect } from "react-redux";
-import { CANVAS_MODES_ENUM, ICONS_NAMES } from "../utils/constants";
+import { CANVAS_MODES, ICONS_NAMES } from "../utils/types";
 import Icon from "./Icon";
 
-const CanvasModeButton = ({ title, iconName, onClick }) => (
+
+interface CanvasModeButtonTypes{
+  title:any
+  iconName:any
+   onClick:any
+}
+
+const CanvasModeButton = ({ title, iconName, onClick }:CanvasModeButtonTypes) => (
   <button
     className="mr-2  flex shadow-md rounded-md"
     key={title}
@@ -14,14 +21,19 @@ const CanvasModeButton = ({ title, iconName, onClick }) => (
   </button>
 );
 
-const CanvasModesBar = ({ canvasMode, swicthCanvasMode }) => {
+interface CanvasModesBarTypes{
+  canvasMode :any
+  swicthCanvasMode :any
+}
+
+const CanvasModesBar = ({ canvasMode, swicthCanvasMode }:CanvasModesBarTypes) => {
   let barContent = (
     <div className="flex">
       <CanvasModeButton
         title="Play"
         iconName={ICONS_NAMES.PLAY}
         onClick={() => {
-          swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.PLAYING});
+          swicthCanvasMode({newCanvasMode:CANVAS_MODES.PLAYING});
         }}
       />
 
@@ -29,45 +41,45 @@ const CanvasModesBar = ({ canvasMode, swicthCanvasMode }) => {
         title="Edit"
         iconName={ICONS_NAMES.EDIT}
         onClick={() => {
-          swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.COMPOSING});
+          swicthCanvasMode({newCanvasMode:CANVAS_MODES.COMPOSING});
         }}
       />
     </div>
   );
-  if (canvasMode === CANVAS_MODES_ENUM.PLAYING)
+  if (canvasMode === CANVAS_MODES.PLAYING)
     barContent = (
       <div className="flex">
         <CanvasModeButton
           title="Pause"
           iconName={ICONS_NAMES.PAUSE}
           onClick={() => {
-            swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.PAUSE});
+            swicthCanvasMode({newCanvasMode:CANVAS_MODES.PAUSE});
           }}
         />
         <CanvasModeButton
           title="Stop"
           iconName={ICONS_NAMES.STOP}
           onClick={() => {
-            swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.IDLE});
+            swicthCanvasMode({newCanvasMode:CANVAS_MODES.IDLE});
           }}
         />
       </div>
     );
-  if (canvasMode === CANVAS_MODES_ENUM.COMPOSING)
+  if (canvasMode === CANVAS_MODES.COMPOSING)
     barContent = (
       <div className="flex">
         <CanvasModeButton
           title="Save"
           iconName={ICONS_NAMES.SUBMIT}
           onClick={() => {
-            swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.IDLE});
+            swicthCanvasMode({newCanvasMode:CANVAS_MODES.IDLE});
           }}
         />
         <CanvasModeButton
           title="Cancel"
           iconName={ICONS_NAMES.CANCEL}
           onClick={() => {
-            swicthCanvasMode({newCanvasMode:CANVAS_MODES_ENUM.IDLE});
+            swicthCanvasMode({newCanvasMode:CANVAS_MODES.IDLE});
           }}
         />
       </div>
@@ -76,7 +88,7 @@ const CanvasModesBar = ({ canvasMode, swicthCanvasMode }) => {
 };
 
 export default connect(
-  state=>({currentCanvasMode:state.canvasMode.currentCanvasMode}),
+  (state:any)=>({currentCanvasMode:state.canvasMode.currentCanvasMode}),
   dispatch=>({swicthCanvasMode:dispatch.canvasMode.swicthCanvasMode}),
 
 )(CanvasModesBar);

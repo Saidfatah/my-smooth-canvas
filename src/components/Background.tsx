@@ -5,16 +5,17 @@ import { WIDTH, HEIGHT } from "../utils/constants";
 
 
 const Background = () => {
-  const backgroundCanvasRef = useRef();
+  const backgroundCanvasRef = useRef<HTMLCanvasElement>(null);
   const firstRender = useRef(true);
 
   useEffect(() => {
-    if (!backgroundCanvasRef.current) return;
-    if (firstRender.current === true) {
-      var ctx = backgroundCanvasRef.current.getContext("2d");
-      ctx.moveTo(0, 0);
-      createGradiantBackground(ctx, WIDTH, HEIGHT);
-      drawGrid(ctx);
+    if (firstRender.current === true && backgroundCanvasRef.current) {
+      var ctx= backgroundCanvasRef.current.getContext("2d");
+      if(ctx){
+        ctx.moveTo(0, 0);
+        createGradiantBackground(ctx, WIDTH, HEIGHT);
+        drawGrid(ctx);
+      }
       firstRender.current = false;
     }
   }, []);
@@ -25,7 +26,7 @@ const Background = () => {
       id="canvas"
       width={WIDTH}
       height={HEIGHT}
-      style={{ background: "#fff", magrin: 20, zIndex: -1 }}
+      style={{ background: "#fff", zIndex: -1 }}
     ></canvas>
   );
 };

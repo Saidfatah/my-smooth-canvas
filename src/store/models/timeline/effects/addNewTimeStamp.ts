@@ -1,4 +1,9 @@
-import { timeStamp, animation } from "../../../../utils/schemas";
+import {
+  animation,
+  Animation,
+  keyframe,
+  Keyframe
+} from '../../../../utils/schemas';
 
 const TIMESTAMP_OFFSET = 1000 / 10; // ms
 
@@ -8,10 +13,19 @@ const TIMESTAMP_OFFSET = 1000 / 10; // ms
 //NOTE
 //when I mention shape in this file I'm talking baout the shape that the users just modified
 //and we want to create a keyframe and an animation for it
-export default (dispatch, { shapeId, animationConfig }, state) => {
-  const currentTimeStamp = state.timeline.currentTimeStamp;
-  const keyframes = [...state.timeline.keyframes];
-  const animations = { ...state.timeline.animations };
+
+interface Animations {
+  [key: string]: animation;
+}
+
+export default (
+  dispatch: any,
+  { shapeId, animationConfig }: any,
+  state: any
+) => {
+  const currentTimeStamp: number = state.timeline.currentTimeStamp;
+  const keyframes: Array<keyframe> = [...state.timeline.keyframes];
+  const animations: Animations = { ...state.timeline.animations };
   const timeStampsLength = keyframes.length;
   const { type: animationType, value, previousValue } = animationConfig;
 
@@ -25,14 +39,15 @@ export default (dispatch, { shapeId, animationConfig }, state) => {
 
   const shapeLastTimeStamp = shapeLastKeyframes[shapeLastKeyframes.length - 1];
 
-  let existingKeyframeOnTimestampForSameShapeAndAnimation = undefined;
+  let existingKeyframeOnTimestampForSameShapeAndAnimation: keyframe =
+    new Keyframe({ time: 0, duration: 0, animationId: 'NO_DEFINED' });
 
   keyframes.forEach((keyframe) => {
     const { animationId } = keyframe;
     if (shapeLastTimeStamp) {
       const {
         time: shapeLastKeyframeTime,
-        duration: shapeLastKeyframeDuration,
+        duration: shapeLastKeyframeDuration
       } = shapeLastTimeStamp;
       const shapeLastKeyframeEndOfExecutionTimestamp =
         shapeLastKeyframeTime + shapeLastKeyframeDuration;
@@ -41,55 +56,59 @@ export default (dispatch, { shapeId, animationConfig }, state) => {
           shapeLastKeyframeEndOfExecutionTimestamp + TIMESTAMP_OFFSET &&
         currentTimeStamp >
           shapeLastKeyframeEndOfExecutionTimestamp - TIMESTAMP_OFFSET &&
-        animationId.indexOf("_" + shapeId) > -1 &&
-        animationId.indexOf("_" + animationType) > -1
+        animationId.indexOf('_' + shapeId) > -1 &&
+        animationId.indexOf('_' + animationType) > -1
       ) {
         existingKeyframeOnTimestampForSameShapeAndAnimation = keyframe;
       }
     }
   });
 
-  if (existingKeyframeOnTimestampForSameShapeAndAnimation) {
+  if (
+    existingKeyframeOnTimestampForSameShapeAndAnimation &&
+    existingKeyframeOnTimestampForSameShapeAndAnimation.animationId !==
+      'NO_DEFINED'
+  ) {
     // just update the keyframe's corresponding animations
+    console.log(existingKeyframeOnTimestampForSameShapeAndAnimation);
     animations[
-      existingKeyframeOnTimestampForSameShapeAndAnimation.animationId
+      existingKeyframeOnTimestampForSameShapeAndAnimation?.animationId
     ].value = value;
     animations[
       existingKeyframeOnTimestampForSameShapeAndAnimation.animationId
     ].prevValue = previousValue;
     dispatch.timeline.UPDATE_TIMELINE_ANIMATIONS({
-      animations,
+      animations
     });
     return;
   }
 
   if (currentTimeStamp > 50) {
-    const newTimeStampTimeValue = shapeLastTimeStamp
+    const newTimeStamp = shapeLastTimeStamp
       ? shapeLastTimeStamp.time + shapeLastTimeStamp.duration
       : 10;
     // if there is no previous keyframe for same type of animation for same shape
     // duration is currentTimeStamp it selff
-    const duration = currentTimeStamp - newTimeStampTimeValue;
-    const newTimeLineAnimation = animation({
-      type: animationType,
-      timeStamp: newTimeStampTimeValue,
-      duration,
+    const duration = currentTimeStamp - newTimeStamp;
+    const newTimeLineAnimation = new Animation({
       shapeId,
+      type: animationType,
+      duration,
       value,
-      prevValue: previousValue,
+      prevValue: previousValue
     });
     const timeLineAnimationIDSuperFixed =
       newTimeLineAnimation.id +
-      "_" +
+      '_' +
       timeStampsLength +
-      "_" +
+      '_' +
       shapeId +
-      "_" +
+      '_' +
       animationType;
-    const newTimeSTamp = timeStamp({
-      time: newTimeStampTimeValue,
+    const newTimeSTamp = new Keyframe({
+      time: newTimeStamp,
       animationId: timeLineAnimationIDSuperFixed,
-      duration,
+      duration
     });
     keyframes.push(newTimeSTamp);
     animations[timeLineAnimationIDSuperFixed] = newTimeLineAnimation;

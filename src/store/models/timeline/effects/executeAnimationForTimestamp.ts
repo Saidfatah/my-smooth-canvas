@@ -1,7 +1,7 @@
-import { ANIMATIONS_TYPES } from "../../../../utils/constants";
-import { easeInOut, lerp } from "../../../../utils/utils";
+import { ANIMATIONS_TYPES } from '../../../../utils/types';
+import { easeInOut, lerp } from '../../../../utils/utils';
 
-export default (dispatch, { timestamp }, state) => {
+export default (dispatch: any, { timestamp }: any, state: any) => {
   const shapes = [...state.timeline.shapes];
   const keyframes = [...state.timeline.keyframes];
   const animations = state.timeline.animations;
@@ -14,7 +14,7 @@ export default (dispatch, { timestamp }, state) => {
   });
 
   dispatch.timeline.UPDATE_CURRENT_TIME_STAMP({
-    currentTimeStamp: timestamp,
+    currentTimeStamp: timestamp
   });
   targetKeyframes.forEach((keyframe) => {
     // check if there is an animation linked to the time stamp

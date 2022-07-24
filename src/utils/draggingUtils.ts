@@ -1,6 +1,7 @@
-import { gridUnit, SNAP_THRESHEHOLD } from "./constants";
+import { gridUnit, SNAP_THRESHEHOLD } from './constants';
+import { shape, shapePose } from './schemas';
 
-export const snapToGrid = (shape, prevPose) => {
+export const snapToGrid = (shape: shape, prevPose: shapePose) => {
   const prevXpose = prevPose.x;
   const prevYpose = prevPose.y;
   if (
@@ -14,13 +15,10 @@ export const snapToGrid = (shape, prevPose) => {
   )
     shape.y = newSnapedPosition(shape.y, gridUnit);
 };
-//  newSnapPosotion()
-//  shouldSnapToPositiuon()
-//  getPOsitionAtTimeStamp()
-//  animateHistory()
-export const newSnapedPosition = (currentPose, unit) =>
+
+export const newSnapedPosition = (currentPose: number, unit: number) =>
   Math.round(currentPose / unit) * unit;
-export const shoudPoseBeSnapped = (pose, unit) => {
+export const shoudPoseBeSnapped = (pose: number, unit: number) => {
   const pu = pose / unit;
   return Math.round(pu) - pu <= SNAP_THRESHEHOLD;
 };
@@ -30,8 +28,8 @@ const speedTracker = {
   lastYSpeed: 0,
   lastXSpeed: 0
 };
-export const calcSpeed = (dx, dy) => {
-  const now = new Date();
+export const calcSpeed = (dx: number, dy: number) => {
+  const now = new Date().getDate();
   const time = now - speedTracker.elapsedtimeFromLastActiveMouseDrag;
 
   let xSpeed = Math.abs((dx / time) * 1000);

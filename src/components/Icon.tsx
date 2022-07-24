@@ -1,7 +1,13 @@
-import React from "react";
-import { ICONS_NAMES } from "../utils/constants";
+import React, { ReactNode } from "react";
+import { ICONS_NAMES } from "../utils/types";
 
-const SvgContainer = ({ classes, size, strokeWidth, children: paths }) => (
+
+interface SvgContainerTypes{
+  classes:string 
+  strokeWidth :number
+  children :ReactNode
+}
+const SvgContainer = ({ classes, strokeWidth, children: paths }:SvgContainerTypes) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className={"text-white flex-shrink-0 " + (classes || "h-6 w-6")}
@@ -13,12 +19,19 @@ const SvgContainer = ({ classes, size, strokeWidth, children: paths }) => (
     {paths}
   </svg>
 );
-const Icon = ({ name, size, strokeWidth, classes }) => {
+
+interface iconTypes{
+  name:any
+  size:any
+  strokeWidth:any
+  classes? :any
+}
+const Icon = ({ name, strokeWidth, classes }:iconTypes) => {
   let icon;
-  if (!ICONS_NAMES[name]) return undefined;
+  if (!ICONS_NAMES[name] ) return <span></span>;
   if (name === ICONS_NAMES.CANCEL)
     icon = (
-      <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
+      <SvgContainer strokeWidth={strokeWidth} classes={classes}>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -28,7 +41,7 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     );
   if (name === ICONS_NAMES.PLAY)
     icon = (
-      <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
+      <SvgContainer strokeWidth={strokeWidth} classes={classes}>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -43,7 +56,7 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     );
   if (name === ICONS_NAMES.PAUSE)
     icon = (
-      <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
+      <SvgContainer strokeWidth={strokeWidth} classes={classes}>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -53,7 +66,7 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     );
   if (name === ICONS_NAMES.EDIT)
     icon = (
-      <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
+      <SvgContainer strokeWidth={strokeWidth} classes={classes}>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -63,7 +76,7 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     );
   if (name === ICONS_NAMES.STOP)
     icon = (
-      <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
+      <SvgContainer strokeWidth={strokeWidth} classes={classes}>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -78,7 +91,7 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
     );
   if (name === ICONS_NAMES.SUBMIT)
     icon = (
-      <SvgContainer strokeWidth={strokeWidth} size={size} classes={classes}>
+      <SvgContainer strokeWidth={strokeWidth} classes={classes}>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -87,7 +100,7 @@ const Icon = ({ name, size, strokeWidth, classes }) => {
       </SvgContainer>
     );
 
-  return icon;
+  return <>{icon}</>;
 };
 
 export default Icon;

@@ -1,24 +1,28 @@
 // Dependencies
 import React, { useEffect, useRef } from "react";
 import {
-  CANVAS_MODES_ENUM,
   ONE_SECOND_WIDTH,
 } from "../utils/constants";
 import { clearCanvasArea } from "../utils/canvasUtils";
 import { shoudPoseBeSnapped, newSnapedPosition } from "../utils/draggingUtils";
 import { connect } from "react-redux";
+import { CANVAS_MODES } from "../utils/types";
 
 const SECOND_MARK_HEIGHT = 15;
 const MILL_SECOND_MARK_HEIGHT = 20;
 
+interface TimelineBarProps{
+  timeIndicatorTimeStamp:any,
+  executeAnimationForTimestamp:any,
+  currentTimeStamp:any,
+}
 const TimelineBar = ({
   timeIndicatorTimeStamp,
   executeAnimationForTimestamp,
   currentTimeStamp,
-  setTimeLineCanvasRef,
-}) => {
-  const timeLineCanvasLocalRef = useRef();
-  const timeLineScrollAbleParentRef = useRef();
+}:TimelineBarProps) => {
+  const timeLineCanvasLocalRef = useRef<HTMLCanvasElement>(null);
+  const timeLineScrollAbleParentRef = useRef<HTMLDivElement>(null);
   const timeSTampIndecatorLastPosition = useRef({ x: 0, y: 5 });
   const canDragTimeINdecator = useRef(false);
   const mouseStartPosition = useRef({ y: 0, x: 0 });
@@ -26,53 +30,61 @@ const TimelineBar = ({
   useEffect(() => {
     if (!timeLineCanvasLocalRef.current) return;
     var ctx = timeLineCanvasLocalRef.current.getContext("2d");
-    // draw time anchor  |0s  |1s  |2s  |3s
-    drawTimelineMarks(ctx);
-    drawCurrentTimeStampIndecator(
-      ctx,
-      timeSTampIndecatorLastPosition.current.x,
-      timeSTampIndecatorLastPosition.current.y
-    );
+    
+    
+    if(ctx !== null){
+      drawTimelineMarks(ctx);
+      drawCurrentTimeStampIndecator(
+        ctx,
+        timeSTampIndecatorLastPosition.current.x,
+        timeSTampIndecatorLastPosition.current.y
+      );
+    }
 
     var BB = timeLineCanvasLocalRef.current.getBoundingClientRect();
     var offsetX = BB.left;
     var offsetY = BB.top;
 
-    const onMouseDown = (e) => {
+    const onMouseDown = (e:MouseEvent) => {
       // tell the browser we're handling this mouse event
       e.preventDefault();
       e.stopPropagation();
       if (typeof timeSTampIndecatorLastPosition.current == "undefined") return;
       // get the current mouse position
-      var mx = parseInt(e.clientX - offsetX, 10);
-      var my = parseInt(e.clientY - offsetY, 10);
+      var mx = parseInt((e.clientX - offsetX).toString(), 10);
+      var my = parseInt((e.clientY - offsetY).toString(), 10);
 
       canDragTimeINdecator.current = true;
       mouseStartPosition.current = { x: mx, y: my };
     };
 
-    const onMouseUp = (e) => {
+    const onMouseUp = (e:MouseEvent) => {
       // tell the browser we're handling this mouse event
       e.preventDefault();
       e.stopPropagation();
 
       if (
         canDragTimeINdecator.current &&
-        canDragTimeINdecator.current === true
+        canDragTimeINdecator.current === true && 
+        timeLineScrollAbleParentRef.current !== null
       ) {
         // get the current mouse position
         const scrollOffset = parseInt(
-          timeLineScrollAbleParentRef.current.scrollLeft
+          (timeLineScrollAbleParentRef.current.scrollLeft).toString()
         );
-        let mx = parseInt(e.clientX - offsetX, 10) + scrollOffset;
-        var my = parseInt(e.clientY - offsetY, 10);
+        let mx = parseInt((e.clientX - offsetX).toString(), 10) + scrollOffset;
+        var my = parseInt((e.clientY - offsetY).toString(), 10);
 
         if (shoudPoseBeSnapped(mx, ONE_SECOND_WIDTH / 10))
           mx = newSnapedPosition(mx, ONE_SECOND_WIDTH / 10);
         //mx = snapToGrid(r, prevPose);
-        clearCanvasArea(ctx, ONE_SECOND_WIDTH * 60, 50);
-        drawCurrentTimeStampIndecator(ctx, mx, 5);
-        drawTimelineMarks(ctx);
+
+        if(ctx !== null){
+          clearCanvasArea(ctx, ONE_SECOND_WIDTH * 60, 50);
+          drawCurrentTimeStampIndecator(ctx, mx, 5);
+          drawTimelineMarks(ctx);
+        }
+        
         // reset the starting mouse position for the next mousemove
         mouseStartPosition.current = { x: mx, y: my };
         const selectedTimeStamp = getTimeIndicatorTimeStamp(mx);
@@ -81,7 +93,7 @@ const TimelineBar = ({
       // clear all the dragging flags
       canDragTimeINdecator.current = false;
     };
-    const onMouseMove = (e) => {
+    const onMouseMove = (e:MouseEvent) => {
       // if we're dragging anything...
       e.preventDefault();
       e.stopPropagation();
@@ -89,17 +101,20 @@ const TimelineBar = ({
       if (
         canDragTimeINdecator.current &&
         canDragTimeINdecator.current === true
+        && timeLineScrollAbleParentRef.current !== null
       ) {
         // get the current mouse position
         const scrollOffset = parseInt(
-          timeLineScrollAbleParentRef.current.scrollLeft
+          (timeLineScrollAbleParentRef.current.scrollLeft).toString()
         );
-        let mx = parseInt(e.clientX - offsetX, 10) - 5 + scrollOffset;
-        var my = parseInt(e.clientY - offsetY, 10);
-
-        clearCanvasArea(ctx, ONE_SECOND_WIDTH * 60, 50);
-        drawCurrentTimeStampIndecator(ctx, mx, 5);
-        drawTimelineMarks(ctx);
+        let mx = parseInt((e.clientX - offsetX).toString(), 10) - 5 + scrollOffset;
+        var my = parseInt((e.clientY - offsetY).toString(), 10);
+        
+        if(ctx !== null){
+          clearCanvasArea(ctx, ONE_SECOND_WIDTH * 60, 50);
+          drawCurrentTimeStampIndecator(ctx, mx, 5);
+          drawTimelineMarks(ctx);
+        }
 
         // escute animation at specific time stamp
         executeAnimationForTimestamp({
@@ -124,6 +139,7 @@ const TimelineBar = ({
     if (!timeLineCanvasLocalRef.current) return;
     var ctx = timeLineCanvasLocalRef.current.getContext("2d");
 
+    if(ctx === null) return 
     clearCanvasArea(ctx, ONE_SECOND_WIDTH * 60, 50);
     drawCurrentTimeStampIndecator(
       ctx,
@@ -133,7 +149,7 @@ const TimelineBar = ({
     drawTimelineMarks(ctx);
   }, [currentTimeStamp]);
 
-  const drawTimelineMarks = (ctx) => {
+  const drawTimelineMarks = (ctx:CanvasRenderingContext2D) => {
     ctx.font = "12px Arial";
     ctx.fillStyle = "white";
     ctx.strokeStyle = "white";
@@ -155,7 +171,7 @@ const TimelineBar = ({
       ctx.fillText(i + "s", second_x, SECOND_MARK_HEIGHT);
     }
   };
-  const drawCurrentTimeStampIndecator = (ctx, xOffset, yOffset) => {
+  const drawCurrentTimeStampIndecator = (ctx:CanvasRenderingContext2D, xOffset:number, yOffset:number) => {
     // the triangle
     const length = 5;
     ctx.beginPath();
@@ -176,8 +192,9 @@ const TimelineBar = ({
     ctx.fill();
   };
 
-  const getTimeIndicatorTimeStamp = (timeStampX) =>
+  const getTimeIndicatorTimeStamp = (timeStampX:number) =>
     (timeStampX / ONE_SECOND_WIDTH) * 1000;
+
   return (
     <div
       ref={timeLineScrollAbleParentRef}
@@ -188,29 +205,31 @@ const TimelineBar = ({
       className="p-2 blur-lg bg-transparent h-12 left-0 absolute overflow-auto"
     >
       <canvas
-        ref={(elem) => {
-          timeLineCanvasLocalRef.current = elem;
-          setTimeLineCanvasRef(elem);
-        }}
+        ref={timeLineCanvasLocalRef}
         id="canvas"
         width={ONE_SECOND_WIDTH * 60}
         height={50}
-        style={{ background: "transparent", magrin: 20, zIndex: -1 }}
+        style={{ background: "transparent", zIndex: -1 }}
       ></canvas>
     </div>
   );
 };
 
+interface TimelineBarConditionalRenderPROPS{
+  currentCanvasMode:any,
+  timeIndicatorTimeStamp:any,
+  executeAnimationForTimestamp:any,
+  currentTimeStamp:any,
+}
 const TimelineBarConditionalRender = ({
   currentCanvasMode,
   timeIndicatorTimeStamp,
   executeAnimationForTimestamp,
   currentTimeStamp,
-  setTimeLineCanvasRef,
-}) => {
+}:TimelineBarConditionalRenderPROPS) => {
   if (
-    currentCanvasMode === CANVAS_MODES_ENUM.COMPOSING ||
-    currentCanvasMode === CANVAS_MODES_ENUM.PLAYING
+    currentCanvasMode === CANVAS_MODES.COMPOSING ||
+    currentCanvasMode === CANVAS_MODES.PLAYING
   )
     return (
       <TimelineBar
@@ -218,14 +237,13 @@ const TimelineBarConditionalRender = ({
           timeIndicatorTimeStamp,
           executeAnimationForTimestamp,
           currentTimeStamp,
-          setTimeLineCanvasRef,
         }}
       />
     );
   return null;
 };
 export default connect(
-  (state) => ({
+  (state:any) => ({
     currentTimeStamp: state.timeline.currentTimeStamp,
     currentCanvasMode: state.canvasMode.currentCanvasMode,
   }),
