@@ -78,7 +78,7 @@ const ComposingPlayGround = ({
         animationConfig: {
           type: ANIMATIONS_TYPES.moveX,
           value: targetShape.x,
-          previousValue : selectedShapePreviousPositionState?.current?.x
+          prevValue : selectedShapePreviousPositionState?.current?.x
         },
       });
       addNewTimeStamp({
@@ -86,7 +86,7 @@ const ComposingPlayGround = ({
         animationConfig: {
           type: ANIMATIONS_TYPES.moveY,
           value: targetShape.y,
-          previousValue : selectedShapePreviousPositionState?.current?.y
+          prevValue : selectedShapePreviousPositionState?.current?.y
         },
       });
       selectedShapeIndex.current = -1;

@@ -1,9 +1,9 @@
 import {
-  animation,
   Animation,
   keyframe,
   Keyframe
 } from '../../../../utils/schemas';
+import { AddNewAnimationEffectArgs, Animations, ANIMATIONS_TYPES } from '../../../../utils/types';
 
 const TIMESTAMP_OFFSET = 1000 / 10; // ms
 
@@ -14,27 +14,27 @@ const TIMESTAMP_OFFSET = 1000 / 10; // ms
 //when I mention shape in this file I'm talking baout the shape that the users just modified
 //and we want to create a keyframe and an animation for it
 
-interface Animations {
-  [key: string]: animation;
-}
+const createSuperFixedId= (id:string,l:number,sId:string,t:ANIMATIONS_TYPES)=>`${id}_${l}_${sId}_${t}`
+
 
 export default (
   dispatch: any,
-  { shapeId, animationConfig }: any,
+  { shapeId, animationConfig }: AddNewAnimationEffectArgs,
   state: any
 ) => {
   const currentTimeStamp: number = state.timeline.currentTimeStamp;
   const keyframes: Array<keyframe> = [...state.timeline.keyframes];
   const animations: Animations = { ...state.timeline.animations };
-  const timeStampsLength = keyframes.length;
-  const { type: animationType, value, previousValue } = animationConfig;
+  const { type, value, prevValue } = animationConfig;
+
+  console.log(type)
 
   // now becasue we are superfixing every animation ID with the shapeId and animationType
   // we can add that as an other condition to the fiter
   const shapeLastKeyframes = keyframes.filter(
     ({ animationId }) =>
       animationId.indexOf(shapeId) > -1 &&
-      animationId.indexOf(animationType) > -1
+      animationId.indexOf(type.toString()) > -1
   );
 
   const shapeLastTimeStamp = shapeLastKeyframes[shapeLastKeyframes.length - 1];
@@ -42,6 +42,7 @@ export default (
   let existingKeyframeOnTimestampForSameShapeAndAnimation: keyframe =
     new Keyframe({ time: 0, duration: 0, animationId: 'NO_DEFINED' });
 
+  //check if there is any existing keyframe on currentTimeStamp
   keyframes.forEach((keyframe) => {
     const { animationId } = keyframe;
     if (shapeLastTimeStamp) {
@@ -57,7 +58,7 @@ export default (
         currentTimeStamp >
           shapeLastKeyframeEndOfExecutionTimestamp - TIMESTAMP_OFFSET &&
         animationId.indexOf('_' + shapeId) > -1 &&
-        animationId.indexOf('_' + animationType) > -1
+        animationId.indexOf('_' + type.toString()) > -1
       ) {
         existingKeyframeOnTimestampForSameShapeAndAnimation = keyframe;
       }
@@ -70,13 +71,12 @@ export default (
       'NO_DEFINED'
   ) {
     // just update the keyframe's corresponding animations
-    console.log(existingKeyframeOnTimestampForSameShapeAndAnimation);
     animations[
       existingKeyframeOnTimestampForSameShapeAndAnimation?.animationId
     ].value = value;
     animations[
       existingKeyframeOnTimestampForSameShapeAndAnimation.animationId
-    ].prevValue = previousValue;
+    ].prevValue = prevValue;
     dispatch.timeline.UPDATE_TIMELINE_ANIMATIONS({
       animations
     });
@@ -92,19 +92,12 @@ export default (
     const duration = currentTimeStamp - newTimeStamp;
     const newTimeLineAnimation = new Animation({
       shapeId,
-      type: animationType,
+      type,
       duration,
       value,
-      prevValue: previousValue
+      prevValue
     });
-    const timeLineAnimationIDSuperFixed =
-      newTimeLineAnimation.id +
-      '_' +
-      timeStampsLength +
-      '_' +
-      shapeId +
-      '_' +
-      animationType;
+    const timeLineAnimationIDSuperFixed =createSuperFixedId(newTimeLineAnimation.id,duration,shapeId,type);
     const newTimeSTamp = new Keyframe({
       time: newTimeStamp,
       animationId: timeLineAnimationIDSuperFixed,
