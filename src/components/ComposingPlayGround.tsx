@@ -1,36 +1,43 @@
 // Dependencies
 import React, { useCallback, useEffect, useRef } from "react";
 import { clearCanvasArea, drawShape } from "../utils/canvasUtils";
-import { WIDTH, HEIGHT, ANIMATIONS_TYPES } from "../utils/constants";
+import { WIDTH, HEIGHT } from "../utils/constants";
+import {  ANIMATIONS_TYPES,CANVAS_MODES } from "../utils/types";
 
-import { CANVAS_MODES_ENUM } from "../utils/constants";
 import { connect } from "react-redux";
+import { shape, shapePose } from "../utils/schemas";
 
+interface ComposingPlayGroundPropTypes {
+  currentCanvasMode :any
+  shapes :Array<shape>
+  addNewTimeStamp :any
+}
+ 
 const ComposingPlayGround = ({
   currentCanvasMode,
-  setComposingPlayGroundRef,
   shapes,
   addNewTimeStamp,
-}) => {
-  const _shapesLocal = useRef([...shapes]);
-  const canvasContext = useRef(undefined);
-  const canvasRef = useRef(false);
+}:ComposingPlayGroundPropTypes) => {
+  const _shapesLocal = useRef([...shapes.map((shape:shape)=>({...shape,isDragging:false}))]);
+  const canvasContext = useRef<CanvasRenderingContext2D | null>();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const selectedShapeIndex = useRef(-1);
-  const selectedShapePreviousPositionState = useRef({x:0,y:0});
+  const selectedShapePreviousPositionState = useRef<shapePose>();
 
   const firstRender = useRef(true);
   const mouseStartPosition = useRef({ y: 0, x: 0 });
 
   const onMouseDown = useCallback(
-    (offsetX, offsetY) => (e) => {
-      if (currentCanvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
+    (offsetX:number, offsetY:number) => (e:MouseEvent) => {
+      if (currentCanvasMode !== CANVAS_MODES.COMPOSING) return;
       // tell the browser we're handling this mouse event
       e.preventDefault();
       e.stopPropagation();
 
       // get the current mouse position
-      var mx = parseInt(e.clientX - offsetX, 10);
-      var my = parseInt(e.clientY - offsetY, 10);
+      
+      var mx = parseInt((e.clientX - offsetX).toString(), 10);
+      var my = parseInt((e.clientY - offsetY).toString(), 10);
 
       // test each rect to see if mouse is inside
       selectedShapeIndex.current = -1;
@@ -56,8 +63,8 @@ const ComposingPlayGround = ({
   );
 
   const onMouseUp = useCallback(
-    (e) => {
-      if (!_shapesLocal.current.length || selectedShapeIndex.current === -1 || currentCanvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
+    (e:MouseEvent) => {
+      if (!_shapesLocal.current.length || selectedShapeIndex.current === -1 || currentCanvasMode !== CANVAS_MODES.COMPOSING) return;
       // tell the browser we're handling this mouse event
       e.preventDefault();
       e.stopPropagation();
@@ -71,7 +78,7 @@ const ComposingPlayGround = ({
         animationConfig: {
           type: ANIMATIONS_TYPES.moveX,
           value: targetShape.x,
-          previousValue : selectedShapePreviousPositionState.current.x
+          previousValue : selectedShapePreviousPositionState?.current?.x
         },
       });
       addNewTimeStamp({
@@ -79,7 +86,7 @@ const ComposingPlayGround = ({
         animationConfig: {
           type: ANIMATIONS_TYPES.moveY,
           value: targetShape.y,
-          previousValue : selectedShapePreviousPositionState.current.y
+          previousValue : selectedShapePreviousPositionState?.current?.y
         },
       });
       selectedShapeIndex.current = -1;
@@ -87,8 +94,8 @@ const ComposingPlayGround = ({
     [currentCanvasMode, selectedShapeIndex.current,selectedShapePreviousPositionState.current]
   );
   const onMouseMove = useCallback(
-    (ctx, offsetX, offsetY) => (e) => {
-      if (currentCanvasMode !== CANVAS_MODES_ENUM.COMPOSING) return;
+    (ctx:CanvasRenderingContext2D | null, offsetX:number, offsetY:number) => (e:MouseEvent) => {
+      if (currentCanvasMode !== CANVAS_MODES.COMPOSING ||  ctx === null) return;
 
       // if we're dragging anything...
       if (selectedShapeIndex.current !== -1) {
@@ -97,8 +104,8 @@ const ComposingPlayGround = ({
         e.stopPropagation();
 
         // get the current mouse position
-        var mx = parseInt(e.clientX - offsetX, 10);
-        var my = parseInt(e.clientY - offsetY, 10);
+        var mx = parseInt((e.clientX - offsetX).toString(), 10);
+        var my = parseInt((e.clientY - offsetY).toString(), 10);
 
         // calculate the distance the mouse has moved
         // since the last mousemove
@@ -129,7 +136,7 @@ const ComposingPlayGround = ({
 
   useEffect(() => {
     if (canvasRef.current && canvasContext.current) {
-      _shapesLocal.current = [...shapes];
+      _shapesLocal.current = [...shapes.map((shape:any)=>({...shape,isDragging:false}))];
       refreshCanvasScene(canvasContext.current, shapes);
     }
   }, [shapes]);
@@ -138,7 +145,7 @@ const ComposingPlayGround = ({
     if (canvasRef.current) {
       var ctx = canvasRef.current.getContext("2d");
       canvasContext.current = ctx;
-      if (firstRender.current === true) {
+      if (firstRender.current === true && ctx !== null) {
         refreshCanvasScene(ctx, shapes);
         firstRender.current = false;
       }
@@ -159,7 +166,7 @@ const ComposingPlayGround = ({
     }
   }, [onMouseDown, onMouseMove, onMouseUp]);
 
-  const refreshCanvasScene = (ctx, _shapes) => {
+  const refreshCanvasScene = (ctx:CanvasRenderingContext2D, _shapes:any) => {
     if (!ctx) return;
     clearCanvasArea(ctx, WIDTH, HEIGHT);
 
@@ -170,17 +177,10 @@ const ComposingPlayGround = ({
     }
   };
 
-  const recordFrameState = () => {
-    // check for shapes that have changed their state
-    // position
-  };
 
   return (
     <canvas
-      ref={(elem) => {
-        canvasRef.current = elem;
-        setComposingPlayGroundRef(elem);
-      }}
+      ref={canvasRef}
       id="canvas"
       width={WIDTH}
       height={HEIGHT}
@@ -190,7 +190,7 @@ const ComposingPlayGround = ({
 };
 
 export default connect(
-  (state) => ({
+  (state:any) => ({
     shapes: state.timeline.shapes,
     currentCanvasMode: state.canvasMode.currentCanvasMode,
   }),

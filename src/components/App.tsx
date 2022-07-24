@@ -1,6 +1,5 @@
 // Dependencies
-import React, { useRef, useState } from "react";
-import { SCENE_LENGTH } from "../utils/constants";
+import React, { useRef } from "react";
 import TimelineBar from "./TimelineBar";
 import Background from "./Background";
 import ComposingPlayGround from "./ComposingPlayGround";
@@ -11,10 +10,7 @@ import { Provider } from "react-redux";
 import store from "../store/store.index";
 
 const App = () => {
-  const [sceneLength, setSceneLength] = useState(SCENE_LENGTH);
   const timeIndicatorTimeStamp = useRef(undefined);
-  const timeLineCanvasRef = useRef();
-  const composingPlayGroundRef = useRef();
 
   return (
     <Provider store={store}>
@@ -24,11 +20,6 @@ const App = () => {
         <TimelineBar
           key="timeline"
           {...{
-            sceneLength,
-            setSceneLength,
-            setTimeLineCanvasRef: (ref) => {
-              timeLineCanvasRef.current = ref;
-            },
             timeIndicatorTimeStamp,
           }}
         />
@@ -36,11 +27,6 @@ const App = () => {
         <Background />
         <ComposingPlayGround
           {...{
-            sceneLength,
-            setSceneLength,
-            setComposingPlayGroundRef: (ref) => {
-              composingPlayGroundRef.current = ref;
-            },
             timeIndicatorTimeStamp,
           }}
         />
