@@ -1,62 +1,60 @@
 import initialState from './timeline.intial.state';
-import executeAnimationForTimestamp from './effects/executeAnimationForTimestamp';
-import executeTimeline from './effects/executeTimeline';
-import addNewTimeStamp from './effects/addNewTimeStamp';
-import updateShapesInComposing from './effects/updateShapesInComposing';
 
-const timelineModule = {
-  state: initialState,
-  reducers: {
-    // handle state changes with pure functions
-    UPDATE_SHAPES: (state: any, { shapes }: any) => ({
+import executeKeyframeAnimation from './effects/executeKeyframeAnimation';
+import playTimeline from './effects/playTimeline';
+import addNewTimeStamp from './effects/addNewTimeStamp';
+import { createModel, RematchDispatch } from '@rematch/core';
+import { RootModel } from '../models.index';
+import { AddNewAnimationEffectArgs, ExecuteKeyframeAnimationArgs } from '../../../utils/types';
+import { RootState } from '../../store.index';
+const timeline = createModel<RootModel>()({
+  state :initialState ,
+  reducers:{
+    UPDATE_SHAPES: (state, { shapes }: any) => ({
       ...state,
       shapes: [...shapes]
     }),
-    UPDATE_CURRENT_TIME_STAMP: (state: any, { currentTimeStamp }: any) => ({
+    UPDATE_CURRENT_TIME_STAMP: (state, { currentTimeStamp }: any) => ({
       ...state,
       currentTimeStamp
     }),
-    UPDATE_TIME_STAMPS: (state: any, { keyframes }: any) => ({
+    UPDATE_TIME_STAMPS: (state, { keyframes }: any) => ({
       ...state,
       keyframes: [...keyframes]
     }),
-    UPDATE_TIMELINE_ANIMATIONS: (state: any, { animations }: any) => ({
+    UPDATE_TIMELINE_ANIMATIONS: (state, { animations }: any) => ({
       ...state,
       animations
     }),
     UPDATE_PREVIOUS_REQUEST_ANIMATION_ID: (
-      state: any,
+      state,
       previousRequestAnimationID: any
     ) => ({
       ...state,
       previousRequestAnimationID
     }),
     UPDATE_REQUEST_ANIMATION_FRAME_LAST_TIMESTAMP: (
-      state: any,
+      state,
       requestAnimationFrameLastTimeStamp: any
     ) => ({
       ...state,
       requestAnimationFrameLastTimeStamp
     }),
     UPDATE_PREVIOUS_REQUEST_ANIMATION_END_DATE: (
-      state: any,
+      state,
       previousRequestAnimationFrameEndDate: any
     ) => ({
       ...state,
       previousRequestAnimationFrameEndDate
-    })
-  },
-  effects: (dispatch: any) => ({
-    // handle state changes with impure functions.
-    // use async/await for async actions
-    executeAnimationForTimestamp: (args: any, state: any) =>
-      executeAnimationForTimestamp(dispatch, args, state),
-    exectueTimeline: (args: any, state: any) =>
-      executeTimeline(dispatch, args, state),
-    addNewTimeStamp: (args: any, state: any) =>
+    })},
+  effects:(dispatch: RematchDispatch<RootModel>) => ({
+    executeKeyframeAnimation: (args: ExecuteKeyframeAnimationArgs, state: RootState) =>
+    executeKeyframeAnimation(dispatch, args, state),
+    playTimeline: (args: any, state: RootState) =>
+      playTimeline(dispatch, args, state),
+    addNewTimeStamp: (args: AddNewAnimationEffectArgs, state: RootState) =>
       addNewTimeStamp(dispatch, args, state),
-    updateShapesInComposing: (args: any, state: any) =>
-      updateShapesInComposing(dispatch, args, state)
-  })
-};
-export default timelineModule;
+  }),
+}) ;
+
+export default timeline;

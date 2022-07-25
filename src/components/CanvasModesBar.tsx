@@ -1,10 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Dispatch, RootState } from "../store/store.index";
 import { CANVAS_MODES, ICONS_NAMES } from "../utils/types";
 import Icon from "./Icon";
 
 
-interface CanvasModeButtonTypes{
+type CanvasModeButtonTypes={
   title:any
   iconName:any
    onClick:any
@@ -21,12 +22,8 @@ const CanvasModeButton = ({ title, iconName, onClick }:CanvasModeButtonTypes) =>
   </button>
 );
 
-interface CanvasModesBarTypes{
-  canvasMode :any
-  swicthCanvasMode :any
-}
 
-const CanvasModesBar = ({ canvasMode, swicthCanvasMode }:CanvasModesBarTypes) => {
+const CanvasModesBar = ({ currentCanvasMode, swicthCanvasMode }:Props) => {
   let barContent = (
     <div className="flex">
       <CanvasModeButton
@@ -46,7 +43,7 @@ const CanvasModesBar = ({ canvasMode, swicthCanvasMode }:CanvasModesBarTypes) =>
       />
     </div>
   );
-  if (canvasMode === CANVAS_MODES.PLAYING)
+  if (currentCanvasMode === CANVAS_MODES.PLAYING)
     barContent = (
       <div className="flex">
         <CanvasModeButton
@@ -65,7 +62,7 @@ const CanvasModesBar = ({ canvasMode, swicthCanvasMode }:CanvasModesBarTypes) =>
         />
       </div>
     );
-  if (canvasMode === CANVAS_MODES.COMPOSING)
+  if (currentCanvasMode === CANVAS_MODES.COMPOSING)
     barContent = (
       <div className="flex">
         <CanvasModeButton
@@ -87,8 +84,16 @@ const CanvasModesBar = ({ canvasMode, swicthCanvasMode }:CanvasModesBarTypes) =>
   return <div className=" p-2 w-full h-24 absolute inset-0">{barContent}</div>;
 };
 
-export default connect(
-  (state:any)=>({currentCanvasMode:state.canvasMode.currentCanvasMode}),
-  dispatch=>({swicthCanvasMode:dispatch.canvasMode.swicthCanvasMode}),
 
-)(CanvasModesBar);
+const mapState= (state:RootState) => ({
+  currentCanvasMode:state.canvasMode.currentCanvasMode
+})
+const mapDispatch =(dispatch:Dispatch) => ({
+  swicthCanvasMode: dispatch.canvasMode.swicthCanvasMode,
+})
+
+type StateProps = ReturnType<typeof mapState>
+type DispatchProps = ReturnType<typeof mapDispatch>
+type Props = StateProps & DispatchProps
+
+export default connect(mapState,mapDispatch)(CanvasModesBar);

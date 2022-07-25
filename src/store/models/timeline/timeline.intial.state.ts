@@ -1,6 +1,5 @@
-import { ANIMATIONS_TYPES, SHAPE_TYPES } from '../../../utils/types';
+import { ANIMATIONS_TYPES, SHAPE_TYPES,Animations } from '../../../utils/types';
 import {
-  animation,
   Animation,
   keyframe,
   Keyframe,
@@ -8,9 +7,6 @@ import {
   Shape
 } from '../../../utils/schemas';
 
-interface Animations {
-  [key: string]: animation;
-}
 
 export interface TimelineStateType {
   keyframes: Array<keyframe>;

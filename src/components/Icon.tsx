@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { ICONS_NAMES } from "../utils/types";
 
 
-interface SvgContainerTypes{
+type SvgContainerTypes = {
   classes:string 
   strokeWidth :number
   children :ReactNode
@@ -20,13 +20,13 @@ const SvgContainer = ({ classes, strokeWidth, children: paths }:SvgContainerType
   </svg>
 );
 
-interface iconTypes{
-  name:any
-  size:any
-  strokeWidth:any
-  classes? :any
+type iconTypes={
+  name:ICONS_NAMES
+  size:number
+  strokeWidth:number
+  classes? :string 
 }
-const Icon = ({ name, strokeWidth, classes }:iconTypes) => {
+const Icon = ({ name, strokeWidth, classes ="" }:iconTypes) => {
   let icon;
   if (!ICONS_NAMES[name] ) return <span></span>;
   if (name === ICONS_NAMES.CANCEL)

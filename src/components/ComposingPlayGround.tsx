@@ -6,18 +6,14 @@ import {  ANIMATIONS_TYPES,CANVAS_MODES } from "../utils/types";
 
 import { connect } from "react-redux";
 import { shape, shapePose } from "../utils/schemas";
+import { Dispatch, RootState } from "../store/store.index";
 
-interface ComposingPlayGroundPropTypes {
-  currentCanvasMode :any
-  shapes :Array<shape>
-  addNewTimeStamp :any
-}
  
 const ComposingPlayGround = ({
   currentCanvasMode,
   shapes,
   addNewTimeStamp,
-}:ComposingPlayGroundPropTypes) => {
+}:Props) => {
   const _shapesLocal = useRef([...shapes.map((shape:shape)=>({...shape,isDragging:false}))]);
   const canvasContext = useRef<CanvasRenderingContext2D | null>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -78,7 +74,7 @@ const ComposingPlayGround = ({
         animationConfig: {
           type: ANIMATIONS_TYPES.moveX,
           value: targetShape.x,
-          prevValue : selectedShapePreviousPositionState?.current?.x
+          prevValue : selectedShapePreviousPositionState?.current?.x || 0
         },
       });
       addNewTimeStamp({
@@ -86,7 +82,7 @@ const ComposingPlayGround = ({
         animationConfig: {
           type: ANIMATIONS_TYPES.moveY,
           value: targetShape.y,
-          prevValue : selectedShapePreviousPositionState?.current?.y
+          prevValue : selectedShapePreviousPositionState?.current?.y || 0
         },
       });
       selectedShapeIndex.current = -1;
@@ -189,12 +185,16 @@ const ComposingPlayGround = ({
   );
 };
 
-export default connect(
-  (state:any) => ({
-    shapes: state.timeline.shapes,
-    currentCanvasMode: state.canvasMode.currentCanvasMode,
-  }),
-  (dispatch) => ({
-    addNewTimeStamp: dispatch.timeline.addNewTimeStamp,
-  })
-)(ComposingPlayGround);
+const mapState= (state:RootState) => ({
+  shapes: state.timeline.shapes,
+  currentCanvasMode: state.canvasMode.currentCanvasMode,
+})
+const mapDispatch =(dispatch:Dispatch) => ({
+  addNewTimeStamp: dispatch.timeline.addNewTimeStamp,
+})
+
+type StateProps = ReturnType<typeof mapState>
+type DispatchProps = ReturnType<typeof mapDispatch>
+type Props = StateProps & DispatchProps
+
+export default connect(mapState,mapDispatch)(ComposingPlayGround);
