@@ -43,3 +43,6 @@ export interface AddNewAnimationEffectArgs {
   shapeId:string;
   animationConfig: Omit<animation, 'duration'|'shapeId'|'id'>
 }
+export interface ExecuteKeyframeAnimationArgs {
+  timeStamp:number;
+}

@@ -1,6 +1,7 @@
 import { CANVAS_MODES } from '../../../../utils/types';
+import { Dispatch, RootState } from '../../../store.index';
 
-export default (dispatch: any, _: any, state: any) => {
+export default (dispatch: Dispatch, _: any, state: RootState):any => {
   const {
     currentTimeStamp,
     timelineLength,
@@ -28,8 +29,8 @@ export default (dispatch: any, _: any, state: any) => {
       timestamp += currentTimeStamp;
       firstTimeCalled = true;
     }
-    dispatch.timeline.executeAnimationForTimestamp({
-      timestamp: timestamp
+    dispatch.timeline.executeKeyframeAnimation({
+      timeStamp: timestamp
     });
 
     dispatch.timeline.UPDATE_REQUEST_ANIMATION_FRAME_LAST_TIMESTAMP(timestamp);

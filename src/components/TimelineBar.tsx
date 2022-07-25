@@ -6,19 +6,15 @@ import {
 import { clearCanvasArea } from "../utils/canvasUtils";
 import { shoudPoseBeSnapped, newSnapedPosition } from "../utils/draggingUtils";
 import { connect } from "react-redux";
-import { CANVAS_MODES } from "../utils/types";
+import { CANVAS_MODES, Omit } from "../utils/types";
+import { Dispatch, RootState } from "../store/store.index";
 
 const SECOND_MARK_HEIGHT = 15;
 const MILL_SECOND_MARK_HEIGHT = 20;
 
-interface TimelineBarProps{
-  timeIndicatorTimeStamp:any,
-  executeAnimationForTimestamp:any,
-  currentTimeStamp:any,
-}
+type TimelineBarProps= Omit<Props , 'currentCanvasMode' >
 const TimelineBar = ({
-  timeIndicatorTimeStamp,
-  executeAnimationForTimestamp,
+  executeKeyframeAnimation,
   currentTimeStamp,
 }:TimelineBarProps) => {
   const timeLineCanvasLocalRef = useRef<HTMLCanvasElement>(null);
@@ -87,8 +83,6 @@ const TimelineBar = ({
         
         // reset the starting mouse position for the next mousemove
         mouseStartPosition.current = { x: mx, y: my };
-        const selectedTimeStamp = getTimeIndicatorTimeStamp(mx);
-        timeIndicatorTimeStamp.current = selectedTimeStamp;
       }
       // clear all the dragging flags
       canDragTimeINdecator.current = false;
@@ -117,8 +111,8 @@ const TimelineBar = ({
         }
 
         // escute animation at specific time stamp
-        executeAnimationForTimestamp({
-          timestamp: getTimeIndicatorTimeStamp(mx)
+        executeKeyframeAnimation({
+          timeStamp: getTimeIndicatorTimeStamp(mx)
         });
 
         // reset the starting mouse position for the next mousemove
@@ -215,18 +209,12 @@ const TimelineBar = ({
   );
 };
 
-interface TimelineBarConditionalRenderPROPS{
-  currentCanvasMode:any,
-  timeIndicatorTimeStamp:any,
-  executeAnimationForTimestamp:any,
-  currentTimeStamp:any,
-}
+ 
 const TimelineBarConditionalRender = ({
   currentCanvasMode,
-  timeIndicatorTimeStamp,
-  executeAnimationForTimestamp,
+  executeKeyframeAnimation,
   currentTimeStamp,
-}:TimelineBarConditionalRenderPROPS) => {
+}:Props ) => {
   if (
     currentCanvasMode === CANVAS_MODES.COMPOSING ||
     currentCanvasMode === CANVAS_MODES.PLAYING
@@ -234,21 +222,26 @@ const TimelineBarConditionalRender = ({
     return (
       <TimelineBar
         {...{
-          timeIndicatorTimeStamp,
-          executeAnimationForTimestamp,
+          executeKeyframeAnimation,
           currentTimeStamp,
         }}
       />
     );
   return null;
 };
-export default connect(
-  (state:any) => ({
-    currentTimeStamp: state.timeline.currentTimeStamp,
-    currentCanvasMode: state.canvasMode.currentCanvasMode,
-  }),
-  (dispatch) => ({
-    executeAnimationForTimestamp:
-      dispatch.timeline.executeAnimationForTimestamp,
-  })
-)(TimelineBarConditionalRender);
+
+
+const mapState= (state:RootState) => ({
+  currentTimeStamp: state.timeline.currentTimeStamp,
+  currentCanvasMode: state.canvasMode.currentCanvasMode,
+})
+const mapDispatch =(dispatch:Dispatch) => ({
+  executeKeyframeAnimation:
+  dispatch.timeline.executeKeyframeAnimation,
+})
+
+type StateProps = ReturnType<typeof mapState>
+type DispatchProps = ReturnType<typeof mapDispatch>
+type Props = StateProps & DispatchProps & {currentTimeStamp:number}
+
+export default connect(mapState,mapDispatch)(TimelineBarConditionalRender);

@@ -1,24 +1,26 @@
 // Dependencies
 import React, { useEffect, useRef } from "react";
+import { connect } from "react-redux";
+import { RootState } from "../store/store.index";
 import { drawGrid, createGradiantBackground } from "../utils/canvasUtils";
 import { WIDTH, HEIGHT } from "../utils/constants";
+import { CANVAS_MODES } from "../utils/types";
 
 
-const Background = () => {
+const Background = ({currentCanvasMode}:StateProps) => {
   const backgroundCanvasRef = useRef<HTMLCanvasElement>(null);
-  const firstRender = useRef(true);
 
   useEffect(() => {
-    if (firstRender.current === true && backgroundCanvasRef.current) {
+    if ( backgroundCanvasRef.current) {
       var ctx= backgroundCanvasRef.current.getContext("2d");
       if(ctx){
         ctx.moveTo(0, 0);
         createGradiantBackground(ctx, WIDTH, HEIGHT);
+        if(currentCanvasMode === CANVAS_MODES.COMPOSING)
         drawGrid(ctx);
       }
-      firstRender.current = false;
     }
-  }, []);
+  }, [currentCanvasMode]);
 
   return (
     <canvas
@@ -31,4 +33,9 @@ const Background = () => {
   );
 };
 
-export default Background;
+const mapState=(state:RootState)=>({
+  currentCanvasMode: state.canvasMode.currentCanvasMode
+})
+
+type StateProps = ReturnType<typeof mapState>
+export default connect(mapState)(Background);

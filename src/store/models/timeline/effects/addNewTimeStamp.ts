@@ -3,7 +3,7 @@ import {
   keyframe,
   Keyframe
 } from '../../../../utils/schemas';
-import { AddNewAnimationEffectArgs, Animations, ANIMATIONS_TYPES } from '../../../../utils/types';
+import { AddNewAnimationEffectArgs, Animations } from '../../../../utils/types';
 
 const TIMESTAMP_OFFSET = 1000 / 10; // ms
 
@@ -14,9 +14,6 @@ const TIMESTAMP_OFFSET = 1000 / 10; // ms
 //when I mention shape in this file I'm talking baout the shape that the users just modified
 //and we want to create a keyframe and an animation for it
 
-const createSuperFixedId= (id:string,l:number,sId:string,t:ANIMATIONS_TYPES)=>`${id}_${l}_${sId}_${t}`
-
-
 export default (
   dispatch: any,
   { shapeId, animationConfig }: AddNewAnimationEffectArgs,
@@ -26,8 +23,6 @@ export default (
   const keyframes: Array<keyframe> = [...state.timeline.keyframes];
   const animations: Animations = { ...state.timeline.animations };
   const { type, value, prevValue } = animationConfig;
-
-  console.log(type)
 
   // now becasue we are superfixing every animation ID with the shapeId and animationType
   // we can add that as an other condition to the fiter
@@ -97,7 +92,7 @@ export default (
       value,
       prevValue
     });
-    const timeLineAnimationIDSuperFixed =createSuperFixedId(newTimeLineAnimation.id,duration,shapeId,type);
+    const timeLineAnimationIDSuperFixed =`${newTimeLineAnimation.id}_${duration}_${shapeId}_${type}`;
     const newTimeSTamp = new Keyframe({
       time: newTimeStamp,
       animationId: timeLineAnimationIDSuperFixed,

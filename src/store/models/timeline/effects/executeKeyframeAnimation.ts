@@ -1,7 +1,7 @@
-import { ANIMATIONS_TYPES } from '../../../../utils/types';
+import { ANIMATIONS_TYPES, ExecuteKeyframeAnimationArgs } from '../../../../utils/types';
 import { easeInOut, lerp } from '../../../../utils/utils';
 
-export default (dispatch: any, { timestamp }: any, state: any) => {
+export default (dispatch: any, { timeStamp }: ExecuteKeyframeAnimationArgs, state: any) => {
   const shapes = [...state.timeline.shapes];
   const keyframes = [...state.timeline.keyframes];
   const animations = state.timeline.animations;
@@ -9,12 +9,12 @@ export default (dispatch: any, { timestamp }: any, state: any) => {
 
   const targetKeyframes = keyframes.filter((keyframe) => {
     return (
-      keyframe.time < timestamp && timestamp < keyframe.time + keyframe.duration
+      keyframe.time < timeStamp && timeStamp < keyframe.time + keyframe.duration
     );
   });
 
   dispatch.timeline.UPDATE_CURRENT_TIME_STAMP({
-    currentTimeStamp: timestamp
+    currentTimeStamp: timeStamp
   });
   targetKeyframes.forEach((keyframe) => {
     // check if there is an animation linked to the time stamp
@@ -29,7 +29,7 @@ export default (dispatch: any, { timestamp }: any, state: any) => {
       if (indexOfTargetShape > -1) {
         const type = targetAnimation.type;
         const duration = targetAnimation.duration;
-        const elapsedTimeSinceAnimationStart = timestamp - keyframe.time;
+        const elapsedTimeSinceAnimationStart = timeStamp - keyframe.time;
         const value = targetAnimation.value;
         const prevValue = targetAnimation.prevValue;
 
