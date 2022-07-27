@@ -2,40 +2,44 @@ import initialState from './timeline.intial.state';
 
 import executeKeyframeAnimation from './effects/executeKeyframeAnimation';
 import playTimeline from './effects/playTimeline';
-import addNewTimeStamp from './effects/addNewTimeStamp';
+import addNewKeyframe from './effects/addNewKeyframe';
+import addNewShape from './effects/addNewShape';
+
 import { createModel, RematchDispatch } from '@rematch/core';
 import { RootModel } from '../models.index';
-import { AddNewAnimationEffectArgs, ExecuteKeyframeAnimationArgs } from '../../../utils/types';
+import { AddNewAnimationEffectArgs, AddNewShapeEffectArgs, Animations, ExecuteKeyframeAnimationArgs } from '../../../utils/types';
 import { RootState } from '../../store.index';
+import { keyframe, shape } from '../../../utils/schemas';
+
 const timeline = createModel<RootModel>()({
   state :initialState ,
   reducers:{
-    UPDATE_SHAPES: (state, { shapes }: any) => ({
+    UPDATE_SHAPES: (state, shapes: Array<shape>) => ({
       ...state,
       shapes: [...shapes]
     }),
-    UPDATE_CURRENT_TIME_STAMP: (state, { currentTimeStamp }: any) => ({
+    UPDATE_CURRENT_TIME_STAMP: (state, currentTimeStamp: number) => ({
       ...state,
       currentTimeStamp
     }),
-    UPDATE_TIME_STAMPS: (state, { keyframes }: any) => ({
+    UPDATE_TIME_KEYFRAMES: (state, keyframes : Array<keyframe>) => ({
       ...state,
       keyframes: [...keyframes]
     }),
-    UPDATE_TIMELINE_ANIMATIONS: (state, { animations }: any) => ({
+    UPDATE_TIMELINE_ANIMATIONS: (state, animations : Animations) => ({
       ...state,
       animations
     }),
     UPDATE_PREVIOUS_REQUEST_ANIMATION_ID: (
       state,
-      previousRequestAnimationID: any
+      previousRequestAnimationID: number
     ) => ({
       ...state,
       previousRequestAnimationID
     }),
     UPDATE_REQUEST_ANIMATION_FRAME_LAST_TIMESTAMP: (
       state,
-      requestAnimationFrameLastTimeStamp: any
+      requestAnimationFrameLastTimeStamp: number
     ) => ({
       ...state,
       requestAnimationFrameLastTimeStamp
@@ -52,8 +56,10 @@ const timeline = createModel<RootModel>()({
     executeKeyframeAnimation(dispatch, args, state),
     playTimeline: (args: any, state: RootState) =>
       playTimeline(dispatch, args, state),
-    addNewTimeStamp: (args: AddNewAnimationEffectArgs, state: RootState) =>
-      addNewTimeStamp(dispatch, args, state),
+    addNewKeyframe: (args: AddNewAnimationEffectArgs, state: RootState) =>
+      addNewKeyframe(dispatch, args, state),
+    addNewShape: (args: AddNewShapeEffectArgs, state: RootState) =>
+      addNewShape(dispatch, args, state),
   }),
 }) ;
 

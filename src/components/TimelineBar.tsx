@@ -1,16 +1,14 @@
 // Dependencies
 import React, { useEffect, useRef } from "react";
-import {
-  ONE_SECOND_WIDTH,
-} from "../utils/constants";
-import { clearCanvasArea } from "../utils/canvasUtils";
+
+import { clearCanvasArea, drawCurrentTimeStampIndecator, drawTimelineMarks } from "../utils/canvasUtils";
 import { shoudPoseBeSnapped, newSnapedPosition } from "../utils/draggingUtils";
 import { connect } from "react-redux";
 import { CANVAS_MODES, Omit } from "../utils/types";
 import { Dispatch, RootState } from "../store/store.index";
+import { ONE_SECOND_WIDTH } from "../utils/constants";
 
-const SECOND_MARK_HEIGHT = 15;
-const MILL_SECOND_MARK_HEIGHT = 20;
+
 
 type TimelineBarProps= Omit<Props , 'currentCanvasMode' >
 const TimelineBar = ({
@@ -143,48 +141,8 @@ const TimelineBar = ({
     drawTimelineMarks(ctx);
   }, [currentTimeStamp]);
 
-  const drawTimelineMarks = (ctx:CanvasRenderingContext2D) => {
-    ctx.font = "12px Arial";
-    ctx.fillStyle = "white";
-    ctx.strokeStyle = "white";
-    for (let i = 0; i < 60; i++) {
-      // draw seconds marks
-      ctx.beginPath();
-      const second_x = ONE_SECOND_WIDTH * i;
-      ctx.moveTo(second_x, 25);
-      ctx.lineTo(second_x, SECOND_MARK_HEIGHT);
-      ctx.stroke();
-      // draw millseconds marks
-      for (let i = 0; i < 10; i++) {
-        const mill_second_x = second_x + i * (ONE_SECOND_WIDTH / 10);
-        ctx.beginPath();
-        ctx.moveTo(mill_second_x, 25);
-        ctx.lineTo(mill_second_x, MILL_SECOND_MARK_HEIGHT);
-        ctx.stroke();
-      }
-      ctx.fillText(i + "s", second_x, SECOND_MARK_HEIGHT);
-    }
-  };
-  const drawCurrentTimeStampIndecator = (ctx:CanvasRenderingContext2D, xOffset:number, yOffset:number) => {
-    // the triangle
-    const length = 5;
-    ctx.beginPath();
-    ctx.moveTo(xOffset + length, yOffset);
-    ctx.lineTo(xOffset + length * 3, yOffset);
-    ctx.lineTo(xOffset + length * 3, yOffset + length * 3);
-    ctx.lineTo(xOffset + length * 2, yOffset + length * 4);
-    ctx.lineTo(xOffset + length, yOffset + length * 3);
-    ctx.closePath();
-
-    // the outline
-
-    ctx.strokeStyle = "white";
-    ctx.stroke();
-
-    // the fill color
-    ctx.fillStyle = "red";
-    ctx.fill();
-  };
+  
+ 
 
   const getTimeIndicatorTimeStamp = (timeStampX:number) =>
     (timeStampX / ONE_SECOND_WIDTH) * 1000;

@@ -7,6 +7,7 @@ import CanvasModesBar from "./CanvasModesBar";
 import "../tailwind.output.css";
 import { Provider } from "react-redux";
 import {store} from "../store/store.index";
+import ShapesSideBar from "./ShapesSideBar";
 
 const App = () => {
 
@@ -14,6 +15,7 @@ const App = () => {
     <Provider store={store}>
       <div className="min-h-screen bg-gray-500 relative">
         <CanvasModesBar />
+        <ShapesSideBar />
         <TimelineBar key="timeline" />
         <Background />
         <ComposingPlayGround />

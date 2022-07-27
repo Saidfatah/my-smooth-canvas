@@ -6,7 +6,8 @@ export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export enum SHAPE_TYPES {
   BOX,
   TEXT,
-  ELIPSE
+  ELIPSE,
+  ARROW
 }
 export enum ANIMATIONS_TYPES {
   moveX="moveX",
@@ -33,7 +34,12 @@ export enum ICONS_NAMES {
   STOP,
   EDIT,
   SUBMIT,
-  CANCEL
+  CANCEL,
+  ARROW,
+  PLUS,
+  TEXT,
+  ELIPSE,
+  SQUARE,
 }
 
 export interface Animations {
@@ -45,4 +51,7 @@ export interface AddNewAnimationEffectArgs {
 }
 export interface ExecuteKeyframeAnimationArgs {
   timeStamp:number;
+}
+export interface AddNewShapeEffectArgs {
+  type:SHAPE_TYPES;
 }

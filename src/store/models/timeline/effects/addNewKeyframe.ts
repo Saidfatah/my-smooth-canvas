@@ -4,6 +4,7 @@ import {
   Keyframe
 } from '../../../../utils/schemas';
 import { AddNewAnimationEffectArgs, Animations } from '../../../../utils/types';
+import { Dispatch, RootState } from '../../../store.index';
 
 const TIMESTAMP_OFFSET = 1000 / 10; // ms
 
@@ -14,10 +15,10 @@ const TIMESTAMP_OFFSET = 1000 / 10; // ms
 //when I mention shape in this file I'm talking baout the shape that the users just modified
 //and we want to create a keyframe and an animation for it
 
-export default (
-  dispatch: any,
+const effect:Function=(
+  dispatch: Dispatch,
   { shapeId, animationConfig }: AddNewAnimationEffectArgs,
-  state: any
+  state: RootState
 ) => {
   const currentTimeStamp: number = state.timeline.currentTimeStamp;
   const keyframes: Array<keyframe> = [...state.timeline.keyframes];
@@ -65,6 +66,7 @@ export default (
     existingKeyframeOnTimestampForSameShapeAndAnimation.animationId !==
       'NO_DEFINED'
   ) {
+
     // just update the keyframe's corresponding animations
     animations[
       existingKeyframeOnTimestampForSameShapeAndAnimation?.animationId
@@ -72,12 +74,10 @@ export default (
     animations[
       existingKeyframeOnTimestampForSameShapeAndAnimation.animationId
     ].prevValue = prevValue;
-    dispatch.timeline.UPDATE_TIMELINE_ANIMATIONS({
-      animations
-    });
+    dispatch.timeline.UPDATE_TIMELINE_ANIMATIONS(animations);
     return;
   }
-
+console.log({currentTimeStamp})
   if (currentTimeStamp > 50) {
     const newTimeStamp = shapeLastTimeStamp
       ? shapeLastTimeStamp.time + shapeLastTimeStamp.duration
@@ -93,14 +93,17 @@ export default (
       prevValue
     });
     const timeLineAnimationIDSuperFixed =`${newTimeLineAnimation.id}_${duration}_${shapeId}_${type}`;
-    const newTimeSTamp = new Keyframe({
+    const newKeyframe = new Keyframe({
       time: newTimeStamp,
       animationId: timeLineAnimationIDSuperFixed,
       duration
     });
-    keyframes.push(newTimeSTamp);
+    keyframes.push(newKeyframe);
     animations[timeLineAnimationIDSuperFixed] = newTimeLineAnimation;
-    dispatch.timeline.UPDATE_TIME_STAMPS({ keyframes });
-    dispatch.timeline.UPDATE_TIMELINE_ANIMATIONS({ animations });
+    console.log(keyframes)
+    dispatch.timeline.UPDATE_TIME_KEYFRAMES(keyframes);
+    dispatch.timeline.UPDATE_TIMELINE_ANIMATIONS(animations);
   }
 };
+
+export default effect

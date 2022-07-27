@@ -1,7 +1,8 @@
 import { ANIMATIONS_TYPES, ExecuteKeyframeAnimationArgs } from '../../../../utils/types';
 import { easeInOut, lerp } from '../../../../utils/utils';
+import { Dispatch, RootState } from '../../../store.index';
 
-export default (dispatch: any, { timeStamp }: ExecuteKeyframeAnimationArgs, state: any) => {
+const effect:Function =(dispatch: Dispatch, { timeStamp }: ExecuteKeyframeAnimationArgs, state: RootState) => {
   const shapes = [...state.timeline.shapes];
   const keyframes = [...state.timeline.keyframes];
   const animations = state.timeline.animations;
@@ -13,9 +14,7 @@ export default (dispatch: any, { timeStamp }: ExecuteKeyframeAnimationArgs, stat
     );
   });
 
-  dispatch.timeline.UPDATE_CURRENT_TIME_STAMP({
-    currentTimeStamp: timeStamp
-  });
+  dispatch.timeline.UPDATE_CURRENT_TIME_STAMP(timeStamp);
   targetKeyframes.forEach((keyframe) => {
     // check if there is an animation linked to the time stamp
 
@@ -76,8 +75,10 @@ export default (dispatch: any, { timeStamp }: ExecuteKeyframeAnimationArgs, stat
           default:
             break;
         }
-        dispatch.timeline.UPDATE_SHAPES({ shapes });
+        dispatch.timeline.UPDATE_SHAPES(shapes);
       }
     }
   });
 };
+
+export default effect

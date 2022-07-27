@@ -15,6 +15,7 @@ export interface shape {
   content: string;
   type: SHAPE_TYPES;
   opacity: number;
+  isSelected?: boolean;
 }
 export class Shape implements shape {
   x: number;
@@ -26,6 +27,7 @@ export class Shape implements shape {
   content: string;
   type: SHAPE_TYPES;
   opacity: number;
+  isSelected?: boolean;
 
   constructor({
     x,
@@ -33,10 +35,10 @@ export class Shape implements shape {
     width,
     height,
     fill,
-    content,
     type,
-    opacity
-  }: PartialBy<shape, 'content' | 'opacity'>) {
+    opacity,
+    isSelected
+  }: PartialBy<shape, 'content' | 'opacity'|"id">) {
     this.x = x;
     this.y = y;
     this.id = v4();
@@ -44,8 +46,10 @@ export class Shape implements shape {
     this.height = height;
     this.fill = fill;
     this.type = type;
-    this.content = content || '';
+    if (type === SHAPE_TYPES.TEXT) this.content = 'INSERT TEXT';
+    else this.content = '';
     this.opacity = opacity || 1;
+    this.isSelected = isSelected || false;
   }
 }
 
