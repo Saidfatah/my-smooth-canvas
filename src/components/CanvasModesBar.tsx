@@ -2,31 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 import { Dispatch, RootState } from "../store/store.index";
 import { CANVAS_MODES, ICONS_NAMES } from "../utils/types";
-import Icon from "./Icon";
-
-
-type CanvasModeButtonTypes={
-  title:any
-  iconName:any
-   onClick:any
-}
-
-const CanvasModeButton = ({ title, iconName, onClick }:CanvasModeButtonTypes) => (
-  <button
-    className="mr-2  flex shadow-md rounded-md"
-    key={title}
-    onClick={onClick}
-  >
-    {/* <span className="text-white font-thin">{title}</span> */}
-    <Icon strokeWidth={1} size={12} name={iconName} />
-  </button>
-);
+import IconButton from "./IconButton";
 
 
 const CanvasModesBar = ({ currentCanvasMode, swicthCanvasMode }:Props) => {
   let barContent = (
     <div className="flex">
-      <CanvasModeButton
+      <IconButton
         title="Play"
         iconName={ICONS_NAMES.PLAY}
         onClick={() => {
@@ -34,7 +16,7 @@ const CanvasModesBar = ({ currentCanvasMode, swicthCanvasMode }:Props) => {
         }}
       />
 
-      <CanvasModeButton
+      <IconButton
         title="Edit"
         iconName={ICONS_NAMES.EDIT}
         onClick={() => {
@@ -46,14 +28,14 @@ const CanvasModesBar = ({ currentCanvasMode, swicthCanvasMode }:Props) => {
   if (currentCanvasMode === CANVAS_MODES.PLAYING)
     barContent = (
       <div className="flex">
-        <CanvasModeButton
+        <IconButton 
           title="Pause"
           iconName={ICONS_NAMES.PAUSE}
           onClick={() => {
             swicthCanvasMode({newCanvasMode:CANVAS_MODES.PAUSE});
           }}
         />
-        <CanvasModeButton
+        <IconButton 
           title="Stop"
           iconName={ICONS_NAMES.STOP}
           onClick={() => {
@@ -65,14 +47,14 @@ const CanvasModesBar = ({ currentCanvasMode, swicthCanvasMode }:Props) => {
   if (currentCanvasMode === CANVAS_MODES.COMPOSING)
     barContent = (
       <div className="flex">
-        <CanvasModeButton
+        <IconButton 
           title="Save"
           iconName={ICONS_NAMES.SUBMIT}
           onClick={() => {
             swicthCanvasMode({newCanvasMode:CANVAS_MODES.IDLE});
           }}
         />
-        <CanvasModeButton
+        <IconButton 
           title="Cancel"
           iconName={ICONS_NAMES.CANCEL}
           onClick={() => {

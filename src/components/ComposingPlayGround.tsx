@@ -12,7 +12,7 @@ import { Dispatch, RootState } from "../store/store.index";
 const ComposingPlayGround = ({
   currentCanvasMode,
   shapes,
-  addNewTimeStamp,
+  addNewKeyframe,
 }:Props) => {
   const _shapesLocal = useRef([...shapes.map((shape:shape)=>({...shape,isDragging:false}))]);
   const canvasContext = useRef<CanvasRenderingContext2D | null>();
@@ -69,7 +69,7 @@ const ComposingPlayGround = ({
       // here we will add a new timestamp with an animation of type moveX
       // and an other animation of type moveY
       const targetShape = _shapesLocal.current[selectedShapeIndex.current];
-      addNewTimeStamp({
+      addNewKeyframe({
         shapeId: targetShape.id,
         animationConfig: {
           type: ANIMATIONS_TYPES.moveX,
@@ -77,7 +77,7 @@ const ComposingPlayGround = ({
           prevValue : selectedShapePreviousPositionState?.current?.x || 0
         },
       });
-      addNewTimeStamp({
+      addNewKeyframe({
         shapeId: targetShape.id,
         animationConfig: {
           type: ANIMATIONS_TYPES.moveY,
@@ -190,7 +190,7 @@ const mapState= (state:RootState) => ({
   currentCanvasMode: state.canvasMode.currentCanvasMode,
 })
 const mapDispatch =(dispatch:Dispatch) => ({
-  addNewTimeStamp: dispatch.timeline.addNewTimeStamp,
+  addNewKeyframe: dispatch.timeline.addNewKeyframe,
 })
 
 type StateProps = ReturnType<typeof mapState>
