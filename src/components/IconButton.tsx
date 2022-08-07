@@ -11,7 +11,8 @@ type IconButtonTypes={
   
 const IconButton = ({ title, iconName, onClick }:IconButtonTypes) => (
     <button
-      className="mr-2  flex shadow-md rounded-md"
+      style={{width:"fit-content"}}
+      className="mr-2 flex shadow-md rounded-md"
       key={title}
       onClick={onClick}
     >

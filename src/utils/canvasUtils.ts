@@ -23,12 +23,18 @@ export const drawRectangle = (
   ctx: CanvasRenderingContext2D,
   shapeConfig: Omit<shape, 'type' | 'fill' | 'id'>
 ) => {
-  const { x, y, width, height } = shapeConfig;
+  const { x, y, width, height,isSelected } = shapeConfig;
 
   ctx.beginPath();
   ctx.rect(x, y, width, height);
   ctx.closePath();
   ctx.fill();
+  if(isSelected) {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'red';
+    ctx.setLineDash([2, 5]);
+    ctx.stroke()
+  }
 };
 
 export const drawShape = (ctx: CanvasRenderingContext2D, shape: shape) => {
