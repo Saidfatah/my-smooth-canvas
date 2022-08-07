@@ -17,6 +17,7 @@ export interface TimelineStateType {
   previousRequestAnimationFrameEndDate: number;
   previousRequestAnimationID: number;
   timelineLength: number;
+  selectedShape: shape | undefined;
 }
 const intialState: TimelineStateType = {
   keyframes: [
@@ -51,7 +52,8 @@ const intialState: TimelineStateType = {
       fill: '#fff',
       opacity: 1
     })
-  ]
+  ],
+  selectedShape:undefined
 };
 
 export default intialState;

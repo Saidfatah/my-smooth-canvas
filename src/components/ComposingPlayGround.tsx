@@ -13,6 +13,7 @@ const ComposingPlayGround = ({
   currentCanvasMode,
   shapes,
   addNewKeyframe,
+  toggleSelectShape
 }:Props) => {
   const _shapesLocal = useRef([...shapes.map((shape:shape)=>({...shape,isDragging:false}))]);
   const canvasContext = useRef<CanvasRenderingContext2D | null>();
@@ -51,6 +52,7 @@ const ComposingPlayGround = ({
             y: shape.y,
           };
           shape.isDragging = true;
+          toggleSelectShape({id:shape.id,value:!shape.isSelected})
         }
       }
       mouseStartPosition.current = { x: mx, y: my };
@@ -65,10 +67,10 @@ const ComposingPlayGround = ({
       e.preventDefault();
       e.stopPropagation();
 
-      _shapesLocal.current[selectedShapeIndex.current].isDragging = false;
+      const targetShape = _shapesLocal.current[selectedShapeIndex.current];
+      targetShape.isDragging = false;
       // here we will add a new timestamp with an animation of type moveX
       // and an other animation of type moveY
-      const targetShape = _shapesLocal.current[selectedShapeIndex.current];
       addNewKeyframe({
         shapeId: targetShape.id,
         animationConfig: {
@@ -191,6 +193,7 @@ const mapState= (state:RootState) => ({
 })
 const mapDispatch =(dispatch:Dispatch) => ({
   addNewKeyframe: dispatch.timeline.addNewKeyframe,
+  toggleSelectShape: dispatch.timeline.toggleSelectShape,
 })
 
 type StateProps = ReturnType<typeof mapState>

@@ -55,3 +55,7 @@ export interface ExecuteKeyframeAnimationArgs {
 export interface AddNewShapeEffectArgs {
   type:SHAPE_TYPES;
 }
+export interface ToggleSelectShapeEffectArgs {
+  id:string;
+  value:boolean
+}
