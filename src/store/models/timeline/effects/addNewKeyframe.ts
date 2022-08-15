@@ -77,7 +77,6 @@ const effect:Function=(
     dispatch.timeline.UPDATE_TIMELINE_ANIMATIONS(animations);
     return;
   }
-console.log({currentTimeStamp})
   if (currentTimeStamp > 50) {
     const newTimeStamp = shapeLastTimeStamp
       ? shapeLastTimeStamp.time + shapeLastTimeStamp.duration
@@ -100,7 +99,6 @@ console.log({currentTimeStamp})
     });
     keyframes.push(newKeyframe);
     animations[timeLineAnimationIDSuperFixed] = newTimeLineAnimation;
-    console.log(keyframes)
     dispatch.timeline.UPDATE_TIME_KEYFRAMES(keyframes);
     dispatch.timeline.UPDATE_TIMELINE_ANIMATIONS(animations);
   }

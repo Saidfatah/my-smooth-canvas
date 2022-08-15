@@ -43,8 +43,8 @@ const intialState: TimelineStateType = {
   timelineLength: 6500 + 1000, // the last timestamp's time + the last timestamp's duration
   shapes: [
     new Shape({
-      x: 100,
-      y: 100,
+      x: 400,
+      y: 400,
       height: 30,
       width: 30,
       id: 'SHAPE_1',
