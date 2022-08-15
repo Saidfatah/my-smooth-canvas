@@ -34,7 +34,7 @@ const ShapeSettingModal = ({ addNewKeyframe,selectedShape }:Props) => {
      <button onClick={openBackgroundColorModal} >Background color {fill}</button>
      <button onClick={openStrokeColorModal} >Stroke color</button> */}
      {/* <button onClick={openStrokeColorModal} >opacity</button> */}
-     <p>preset animations</p>
+     {/* <p>preset animations</p> */}
      <button 
      className="bg-white mb-1 rounded-sm p-1 text-blue-900 "
      onClick={addPresetAnimationFrame(ANIMATIONS_TYPES.fadeIn)} >fadIn</button>

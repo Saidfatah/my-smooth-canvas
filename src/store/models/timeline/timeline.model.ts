@@ -5,10 +5,11 @@ import playTimeline from './effects/playTimeline';
 import addNewKeyframe from './effects/addNewKeyframe';
 import addNewShape from './effects/addNewShape';
 import toggleSelectShape from './effects/toggleSelectShape';
+import updateShape from './effects/updateShape';
 
 import { createModel, RematchDispatch } from '@rematch/core';
 import { RootModel } from '../models.index';
-import { AddNewAnimationEffectArgs, AddNewShapeEffectArgs, Animations, ExecuteKeyframeAnimationArgs, ToggleSelectShapeEffectArgs } from '../../../utils/types';
+import { AddNewAnimationEffectArgs, AddNewShapeEffectArgs, Animations, ExecuteKeyframeAnimationArgs, ToggleSelectShapeEffectArgs, UpdateShapeArgs } from '../../../utils/types';
 import { RootState } from '../../store.index';
 import { keyframe, shape } from '../../../utils/schemas';
 
@@ -67,6 +68,8 @@ const timeline = createModel<RootModel>()({
       addNewShape(dispatch, args, state),
     toggleSelectShape: (args: ToggleSelectShapeEffectArgs, state: RootState) =>
       toggleSelectShape(dispatch, args, state),
+    updateShape: (args: UpdateShapeArgs, state: RootState) =>
+    updateShape(dispatch, args, state),
   }),
 }) ;
 
