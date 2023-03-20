@@ -9,7 +9,7 @@ interface CanvasModeModelType {
   currentCanvasMode: CANVAS_MODES;
 }
 
-const canvasModeModel= createModel<RootModel>()( {
+const canvasModeModel = createModel<RootModel>()({
   state: {
     currentCanvasMode: CANVAS_MODES.IDLE
   } as CanvasModeModelType,
@@ -25,10 +25,10 @@ const canvasModeModel= createModel<RootModel>()( {
         currentCanvasMode: newCanvasMode
       });
       if (newCanvasMode === CANVAS_MODES.PLAYING) {
-        dispatch.timeline.exectueTimeline();
+        dispatch.timeline.playTimeline();
       }
     }
   })
 });
 
-export default canvasModeModel
+export default canvasModeModel;
